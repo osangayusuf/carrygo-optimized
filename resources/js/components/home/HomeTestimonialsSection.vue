@@ -48,7 +48,7 @@ function maskedPhone(msisdn: string | undefined): { prefix: string; suffix: stri
                     </div>
 
                     <!-- Comment -->
-                    <p class="mb-6 flex-grow text-sm leading-relaxed text-on-surface">
+                    <p class="mb-6 grow text-sm leading-relaxed text-on-surface">
                         "{{ review.comment }}"
                     </p>
 

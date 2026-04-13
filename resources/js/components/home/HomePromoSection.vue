@@ -6,7 +6,7 @@ import { tasks } from '@/routes';
     <section class="mx-auto max-w-screen-2xl px-8 py-12">
         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div
-                class="group relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary to-primary-container p-12 text-white md:col-span-2"
+                class="group relative overflow-hidden rounded-[2.5rem] bg-linear-to-br from-primary to-primary-container p-12 text-white md:col-span-2"
             >
                 <div class="relative z-10">
                     <h2
