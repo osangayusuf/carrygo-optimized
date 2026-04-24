@@ -2,7 +2,9 @@
 import { router } from '@inertiajs/vue3';
 import { useDebounceFn } from '@vueuse/core';
 import { computed, ref } from 'vue';
+import { formatPrice } from '@/lib/utils';
 import type { LeaderboardBid } from '@/pages/LeaderboardBids.vue';
+import { leaderboard } from '@/routes';
 import type { LengthAwarePaginator } from '@/types';
 
 const params = new URLSearchParams(window.location.search);
@@ -15,11 +17,13 @@ const search = ref(params.get('search') ?? '');
 
 function visit(extra: Record<string, string | number> = {}) {
     router.get(
-        '/leaderboard',
-        {
-            ...(search.value ? { search: search.value } : {}),
-            ...extra,
-        },
+        leaderboard.url({
+            query: {
+                ...(search.value ? { search: search.value } : {}),
+                ...extra,
+            },
+        }),
+        {},
         { preserveState: true, preserveScroll: true, replace: true },
     );
 }
@@ -70,13 +74,12 @@ const visiblePages = computed(() => {
 
 function formatMsisdn(msisdn: string): string {
     if (!msisdn || msisdn.length < 5) return 'Unknown';
+
     return msisdn.slice(0, -4) + '****';
 }
 
-function formattedPrice(price: string): string {
-    const num = parseFloat(price);
-    return isNaN(num) ? price : `₦ ${num.toLocaleString()}`;
-}
+
+const expandedImage = ref<string | null>(null);
 </script>
 
 <template>
@@ -129,18 +132,19 @@ function formattedPrice(price: string): string {
         </div>
 
         <!-- Leaderboard grid -->
-        <div v-else class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div v-else class="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 xl:grid-cols-5">
             <div
                 v-for="bid in bids.data"
                 :key="bid.id"
-                class="group flex h-full flex-col overflow-hidden rounded-3xl border border-surface-container bg-surface-container-lowest transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5"
+                class="group flex h-full flex-col overflow-hidden rounded-2xl border border-surface-container bg-surface-container-lowest transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 sm:rounded-3xl"
             >
                 <!-- Image -->
                 <div class="relative aspect-4/3 overflow-hidden border-b border-surface-container">
                     <img
                         :src="bid.image"
                         :alt="bid.name"
-                        class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        class="h-full w-full cursor-pointer object-cover transition-transform duration-700 group-hover:scale-110"
+                        @click="expandedImage = bid.image"
                     />
                     <a
                         :href="bid.url"
@@ -153,13 +157,13 @@ function formattedPrice(price: string): string {
                     <div class="absolute bottom-4 left-4">
                         <span
                             v-if="bid.status === 1"
-                            class="rounded-lg bg-primary-container px-3 py-1 text-[10px] font-black tracking-widest text-on-primary-container uppercase shadow-lg"
+                            class="rounded-lg bg-primary-container px-2 py-1 text-[9px] font-black tracking-widest text-on-primary-container uppercase shadow-lg sm:px-3 sm:text-[10px]"
                         >
                             Live
                         </span>
                         <span
                             v-else
-                            class="rounded-lg bg-secondary px-3 py-1 text-[10px] font-black tracking-widest text-white uppercase shadow-lg"
+                            class="rounded-lg bg-secondary px-2 py-1 text-[9px] font-black tracking-widest text-white uppercase shadow-lg sm:px-3 sm:text-[10px]"
                         >
                             Upcoming
                         </span>
@@ -167,52 +171,52 @@ function formattedPrice(price: string): string {
                 </div>
 
                 <!-- Card body -->
-                <div class="flex grow flex-col p-6">
-                    <div class="mb-6 flex items-start justify-between">
-                        <h3 class="font-headline text-xl leading-snug font-extrabold line-clamp-2 pr-2">
+                <div class="flex grow flex-col p-3 sm:p-4">
+                    <div class="mb-3 flex items-start justify-between">
+                        <h3 class="font-headline text-sm leading-snug font-extrabold line-clamp-2 pr-2 sm:text-base">
                             {{ bid.name }}
                         </h3>
                         <div class="text-right shrink-0">
-                            <p class="mb-1 text-[10px] font-bold tracking-wider text-secondary uppercase">
+                            <p class="mb-0.5 text-[8px] font-bold tracking-wider text-secondary uppercase sm:text-[9px]">
                                 Value
                             </p>
-                            <p class="text-xl font-black text-primary">
-                                {{ formattedPrice(bid.price) }}
+                            <p class="text-base font-black text-primary whitespace-nowrap sm:text-lg">
+                                {{ formatPrice(bid.price) }}
                             </p>
                         </div>
                     </div>
 
                     <div class="mt-auto">
-                        <h4 class="text-xs font-black tracking-widest text-outline uppercase mb-3">
+                        <h4 class="text-[9px] font-black tracking-widest text-outline uppercase mb-2 sm:text-[10px]">
                             Top Bidders
                         </h4>
-                        
-                        <div v-if="bid.top_bidders && bid.top_bidders.length > 0" class="flex flex-col gap-2">
-                            <div 
-                                v-for="(bidder, index) in bid.top_bidders" 
+
+                        <div v-if="bid.top_bidders && bid.top_bidders.length > 0" class="flex flex-col gap-1.5">
+                            <div
+                                v-for="(bidder, index) in bid.top_bidders"
                                 :key="index"
-                                class="flex items-center justify-between rounded-xl px-4 py-3"
+                                class="flex items-center justify-between rounded-xl px-2.5 py-1.5 sm:px-3 sm:py-2"
                                 :class="index === 0 ? 'bg-primary-container/40 border border-primary/20' : 'bg-surface-container-low'"
                             >
-                                <div class="flex items-center gap-3">
-                                    <span 
-                                        class="flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-black"
+                                <div class="flex items-center gap-1.5 sm:gap-2">
+                                    <span
+                                        class="flex h-4 w-4 items-center justify-center rounded-full text-[8px] font-black sm:h-5 sm:w-5 sm:text-[9px]"
                                         :class="index === 0 ? 'bg-primary text-white shadow-md shadow-primary/30' : 'bg-surface-container-high text-on-surface-variant'"
                                     >
                                         {{ index + 1 }}
                                     </span>
-                                    <span class="text-sm font-bold text-on-surface">
+                                    <span class="text-[10px] font-bold text-on-surface sm:text-xs">
                                         {{ formatMsisdn(bidder.msisdn) }}
                                     </span>
                                 </div>
-                                <span class="text-sm font-black" :class="index === 0 ? 'text-primary' : 'text-on-surface-variant'">
+                                <span class="text-[10px] font-black sm:text-xs" :class="index === 0 ? 'text-primary' : 'text-on-surface-variant'">
                                     {{ bidder.total_points }} pts
                                 </span>
                             </div>
                         </div>
-                        <div v-else class="rounded-xl border border-dashed border-outline-variant p-6 text-center">
-                            <p class="text-sm font-bold text-outline">No bids recorded</p>
-                            <p class="text-xs text-outline/80 mt-1">Check back once the bidding war starts.</p>
+                        <div v-else class="rounded-xl border border-dashed border-outline-variant p-3 text-center sm:p-4">
+                            <p class="text-[10px] font-bold text-outline sm:text-xs">No bids recorded</p>
+                            <p class="text-[9px] text-outline/80 mt-0.5 sm:text-[10px]">Check back once the bidding war starts.</p>
                         </div>
                     </div>
                 </div>
@@ -254,5 +258,16 @@ function formattedPrice(price: string): string {
                 <span class="material-symbols-outlined">chevron_right</span>
             </button>
         </div>
+
+        <!-- Image Overlay -->
+        <Teleport to="body">
+            <div v-if="expandedImage"
+                class="fixed inset-0 z-100 flex cursor-pointer items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+                @click="expandedImage = null">
+                <img :src="expandedImage"
+                    class="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
+                    alt="Expanded image" />
+            </div>
+        </Teleport>
     </section>
 </template>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { Form, Head, Link, router, usePage } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
+import { Form, Head, Link } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
+import { home, profile } from '@/routes';
 import { store as claimStore } from '@/actions/App/Http/Controllers/RewardClaimController';
 import AchievementBadgesSection from '@/components/rewards/AchievementBadgesSection.vue';
 import DailyCheckinSection from '@/components/rewards/DailyCheckinSection.vue';
@@ -150,7 +152,7 @@ function onSpun(pointsWon: number) {
                             </p>
                         </div>
                         <Link
-                            href="/profile"
+                            :href="profile.url()"
                             class="flex items-center gap-1.5 rounded-xl bg-primary/10 px-4 py-2 text-sm font-bold text-primary transition hover:bg-primary/20"
                         >
                             <span class="material-symbols-outlined text-base!">share</span>
@@ -178,7 +180,7 @@ function onSpun(pointsWon: number) {
             <!-- Back link -->
             <div class="mt-10 text-center">
                 <Link
-                    href="/"
+                    :href="home.url()"
                     class="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline"
                 >
                     <span class="material-symbols-outlined text-lg!">arrow_back</span>

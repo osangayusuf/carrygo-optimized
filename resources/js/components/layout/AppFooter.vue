@@ -33,19 +33,15 @@ const year = new Date().getFullYear();
                     opportunities.
                 </p>
                 <div class="flex space-x-4">
-                    <a
-                        class="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-inverse-on-surface/80 transition-colors hover:text-primary-container"
-                        href="#"
-                    >
-                        <span class="material-symbols-outlined">public</span>
+                    <a class="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-inverse-on-surface/80 transition-colors hover:text-primary-container"
+                        href="https://www.instagram.com/carrygo_nigeria?igsh=MTdiNHM2ZTJldnp1cA%3D%3D&utm_source=qr"
+                        target="blank">
+                        <span class="pi pi-instagram"></span>
                     </a>
-                    <a
-                        class="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-inverse-on-surface/80 transition-colors hover:text-primary-container"
-                        href="#"
-                    >
-                        <span class="material-symbols-outlined"
-                            >alternate_email</span
-                        >
+                    <a class="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-inverse-on-surface/80 transition-colors hover:text-primary-container"
+                        href="https://www.facebook.com/share/18TeWUCG19/"
+                        target="blank">
+                        <span class="pi pi-facebook"></span>
                     </a>
                 </div>
             </div>

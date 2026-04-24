@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { storeReview } from '@/actions/App/Http/Controllers/HistoryController';
 
 const props = defineProps<{
     show: boolean;
@@ -16,6 +17,8 @@ const emit = defineEmits<{
 const form = useForm({
     rating: 0,
     comment: '',
+    social_platform: '',
+    social_handle: '',
 });
 
 const hoveredRating = ref(0);
@@ -29,9 +32,9 @@ function submit() {
     if (!props.bid) {
         return;
     }
-    
+
     // We assume the user is auth'd since this page is for auth users
-    form.post(`/bids/${props.bid.id}/review`, {
+    form.post(storeReview.url(props.bid.id), {
         preserveScroll: true,
         onSuccess: () => {
             emit('success');
@@ -76,25 +79,29 @@ function submit() {
                             Past Reviews
                         </h3>
                         <div class="space-y-4">
-                            <div 
-                                v-for="review in bid.reviews" 
+                            <div
+                                v-for="review in bid.reviews"
                                 :key="review.id"
                                 class="rounded-xl border border-secondary/20 bg-secondary-container/10 p-4"
                             >
-                                <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center justify-between mb-1">
                                     <span class="text-xs font-bold text-on-surface">{{ review.user_id.slice(0, -4) + '****' }}</span>
                                     <div class="flex text-amber-500">
-                                        <svg 
+                                        <svg
                                             v-for="i in 5" :key="i"
                                             class="w-4 h-4 shrink-0"
                                             :class="i <= Math.round(Number(review.rating)) ? 'fill-current text-amber-500 stroke-amber-500' : 'fill-none stroke-amber-500 text-amber-500'"
-                                            xmlns="http://www.w3.org/2000/svg" 
-                                            viewBox="0 0 24 24" 
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
                                             stroke-width="1.5"
                                         >
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
                                         </svg>
                                     </div>
+                                </div>
+                                <div v-if="review.social_platform && review.social_handle" class="mb-2 flex items-center gap-1 text-xs text-primary font-medium">
+                                    <span>{{ review.social_platform }}:</span>
+                                    <span>{{ review.social_handle.startsWith('@') ? review.social_handle : '@' + review.social_handle }}</span>
                                 </div>
                                 <p class="text-sm text-on-surface-variant" style="white-space: pre-wrap;">
                                     {{ review.comment }}
@@ -118,16 +125,16 @@ function submit() {
                                     Rating
                                 </label>
                                 <div class="flex items-center gap-1 text-amber-500 cursor-pointer">
-                                    <svg 
-                                        v-for="i in 5" 
+                                    <svg
+                                        v-for="i in 5"
                                         :key="i"
                                         class="w-8 h-8 shrink-0 transition-transform hover:scale-110"
                                         :class="(hoveredRating ? i <= hoveredRating : i <= form.rating) ? 'fill-current text-amber-500 stroke-amber-500' : 'fill-none stroke-amber-500 text-amber-500'"
                                         @mouseenter="hoveredRating = i"
                                         @mouseleave="hoveredRating = 0"
                                         @click="form.rating = i"
-                                        xmlns="http://www.w3.org/2000/svg" 
-                                        viewBox="0 0 24 24" 
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
                                         stroke-width="1.5"
                                     >
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
@@ -136,6 +143,45 @@ function submit() {
                                 <p v-if="form.errors.rating" class="mt-2 text-xs font-bold text-error">
                                     {{ form.errors.rating }}
                                 </p>
+                            </div>
+
+                            <!-- Social Media (Optional) -->
+                            <div class="mb-4 grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="mb-2 block text-xs font-bold text-outline uppercase">
+                                        Social Platform <span class="text-secondary/50 font-normal tracking-normal lowercase">(Optional)</span>
+                                    </label>
+                                    <select
+                                        v-model="form.social_platform"
+                                        class="w-full rounded-2xl border border-surface-container bg-surface-container-low px-4 py-3 text-sm font-medium focus:border-primary focus:ring-2 focus:ring-primary-container disabled:opacity-50 appearance-none"
+                                        :disabled="form.processing"
+                                    >
+                                        <option value="">Select Platform</option>
+                                        <option value="X (Twitter)">X (Twitter)</option>
+                                        <option value="Facebook">Facebook</option>
+                                        <option value="Instagram">Instagram</option>
+                                        <option value="TikTok">TikTok</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <p v-if="form.errors.social_platform" class="mt-2 text-xs font-bold text-error">
+                                        {{ form.errors.social_platform }}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label class="mb-2 block text-xs font-bold text-outline uppercase">
+                                        Handle / Username <span class="text-secondary/50 font-normal tracking-normal lowercase">(Optional)</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        v-model="form.social_handle"
+                                        placeholder="@username"
+                                        class="w-full rounded-2xl border border-surface-container bg-surface-container-low px-4 py-3 text-sm font-medium focus:border-primary focus:ring-2 focus:ring-primary-container disabled:opacity-50"
+                                        :disabled="form.processing"
+                                    />
+                                    <p v-if="form.errors.social_handle" class="mt-2 text-xs font-bold text-error">
+                                        {{ form.errors.social_handle }}
+                                    </p>
+                                </div>
                             </div>
 
                             <!-- Comment Input -->

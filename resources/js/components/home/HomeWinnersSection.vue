@@ -6,16 +6,19 @@ const props = defineProps<{
     winners: Winner[];
 }>();
 
+const latestWinner = computed(() => props.winners[0] || null);
+const remainingWinners = computed(() => props.winners.slice(1));
+
 const loopWinners = computed(() => {
-    if (props.winners.length <= 1) {
-        return props.winners;
+    if (remainingWinners.value.length <= 1) {
+        return remainingWinners.value;
     }
 
-    return [...props.winners, ...props.winners];
+    return [...remainingWinners.value, ...remainingWinners.value];
 });
 
 const marqueeDuration = computed(() => {
-    return Math.max(20, props.winners.length * 5);
+    return Math.max(20, remainingWinners.value.length * 5);
 });
 
 function maskedPhone(msisdn: string): { prefix: string; suffix: string } {
@@ -56,26 +59,14 @@ function relativeTime(dateStr: string): string {
                 </p>
             </div>
         </div>
-        <div
-            class="winners-marquee px-8 pb-2"
-            :class="{ 'winners-marquee--static': props.winners.length <= 1 }"
-            :style="{ '--winners-marquee-duration': `${marqueeDuration}s` }"
-        >
-            <div class="winners-marquee__track">
+        <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 overflow-hidden px-4 md:px-8 pb-2">
             <div
-                v-for="(winner, i) in loopWinners"
-                :key="`${winner.id}-${i}`"
-                class="min-w-[320px] shrink-0 rounded-2xl bg-surface-container-lowest p-6 shadow-sm transition-shadow hover:shadow-md"
-                :class="i === 0 ? 'border-2 border-primary-container/20' : ''"
+                v-if="latestWinner"
+                class="w-full lg:w-auto lg:min-w-[320px] shrink-0 rounded-2xl border-2 border-primary-container/20 bg-surface-container-lowest p-6 shadow-sm transition-shadow hover:shadow-md"
             >
                 <div class="mb-4 flex items-center gap-4">
                     <div
-                        class="flex h-12 w-12 items-center justify-center rounded-full text-primary"
-                        :class="
-                            i === 0
-                                ? 'bg-primary-container/30'
-                                : 'bg-secondary-container'
-                        "
+                        class="flex h-12 w-12 items-center justify-center rounded-full text-primary bg-primary-container/30"
                     >
                         <span
                             class="material-symbols-outlined"
@@ -85,15 +76,15 @@ function relativeTime(dateStr: string): string {
                     </div>
                     <div>
                         <p class="text-sm font-bold">
-                            {{ maskedPhone(winner.msisdn).prefix }}
+                            {{ maskedPhone(latestWinner.msisdn).prefix }}
                             <span class="text-secondary opacity-50">***</span>
-                            {{ maskedPhone(winner.msisdn).suffix }}
+                            {{ maskedPhone(latestWinner.msisdn).suffix }}
                         </p>
                         <p class="text-xs text-secondary">Verified Winner</p>
                     </div>
                 </div>
                 <h3 class="mb-1 font-headline text-lg font-bold">
-                    {{ (winner.bid?.name ?? '—').length > 25 ? (winner.bid?.name ?? '—').substring(0, 25) + '...' : (winner.bid?.name ?? '—') }}
+                    {{ (latestWinner.bid?.name ?? '—').length > 25 ? (latestWinner.bid?.name ?? '—').substring(0, 25) + '...' : (latestWinner.bid?.name ?? '—') }}
                 </h3>
                 <div
                     class="mt-4 flex items-center justify-between border-t border-surface-container pt-4"
@@ -103,15 +94,68 @@ function relativeTime(dateStr: string): string {
                             >stars</span
                         >
                         <span class="text-sm font-bold">
-                            Won with {{ winner.total_points.toLocaleString() }} points
+                            Won with {{ latestWinner.total_points.toLocaleString() }} points
 
                         </span>
                     </div>
                     <span class="text-xs font-medium text-secondary italic">
-                        {{ relativeTime(winner.created_at) }}
+                        {{ relativeTime(latestWinner.created_at) }}
                     </span>
                 </div>
             </div>
+
+            <div
+                v-if="remainingWinners.length"
+                class="winners-marquee flex-1 min-w-0"
+                :class="{ 'winners-marquee--static': remainingWinners.length <= 1 }"
+                :style="{ '--winners-marquee-duration': `${marqueeDuration}s` }"
+            >
+                <div class="winners-marquee__track">
+                <div
+                    v-for="(winner, i) in loopWinners"
+                    :key="`${winner.id}-${i}`"
+                    class="min-w-[320px] shrink-0 rounded-2xl bg-surface-container-lowest p-6 shadow-sm transition-shadow hover:shadow-md"
+                >
+                    <div class="mb-4 flex items-center gap-4">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full text-primary bg-secondary-container"
+                        >
+                            <span
+                                class="material-symbols-outlined"
+                                data-weight="fill"
+                                >person</span
+                            >
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold">
+                                {{ maskedPhone(winner.msisdn).prefix }}
+                                <span class="text-secondary opacity-50">***</span>
+                                {{ maskedPhone(winner.msisdn).suffix }}
+                            </p>
+                            <p class="text-xs text-secondary">Verified Winner</p>
+                        </div>
+                    </div>
+                    <h3 class="mb-1 font-headline text-lg font-bold">
+                        {{ (winner.bid?.name ?? '—').length > 25 ? (winner.bid?.name ?? '—').substring(0, 25) + '...' : (winner.bid?.name ?? '—') }}
+                    </h3>
+                    <div
+                        class="mt-4 flex items-center justify-between border-t border-surface-container pt-4"
+                    >
+                        <div class="flex items-center gap-1 text-tertiary">
+                            <span class="material-symbols-outlined text-sm"
+                                >stars</span
+                            >
+                            <span class="text-sm font-bold">
+                                Won with {{ winner.total_points.toLocaleString() }} points
+
+                            </span>
+                        </div>
+                        <span class="text-xs font-medium text-secondary italic">
+                            {{ relativeTime(winner.created_at) }}
+                        </span>
+                    </div>
+                </div>
+                </div>
             </div>
         </div>
     </section>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
+import HistoryBidsSection from '@/components/history/HistoryBidsSection.vue';
 import type { Bid } from '@/pages/Home.vue';
 import type { LengthAwarePaginator } from '@/types';
-import HistoryBidsSection from '@/components/history/HistoryBidsSection.vue';
 
 export interface WonBid extends Bid {
     bid_winner?: {

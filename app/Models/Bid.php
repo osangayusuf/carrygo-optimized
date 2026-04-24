@@ -78,6 +78,6 @@ class Bid extends Model
 
     public function reviews(): HasMany
     {
-        return $this->hasMany(Review::class, 'bidid');
+        return $this->hasMany(Review::class, 'bidid')->where('moderation_status', 'approved');
     }
 }

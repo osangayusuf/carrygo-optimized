@@ -43,6 +43,8 @@ class HistoryController extends Controller
         $validated = $request->validate([
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
             'comment' => ['required', 'string', 'max:2000'],
+            'social_platform' => ['nullable', 'string', 'max:50'],
+            'social_handle' => ['nullable', 'string', 'max:255'],
         ]);
 
         /** @var User $user */
@@ -52,8 +54,10 @@ class HistoryController extends Controller
             'user_id' => $user->msisdn,
             'rating' => $validated['rating'],
             'comment' => $validated['comment'],
+            'social_platform' => $validated['social_platform'] ?? null,
+            'social_handle' => $validated['social_handle'] ?? null,
         ]);
 
-        return redirect()->back()->with('success', 'Review submitted successfully!');
+        return redirect()->back()->with('success', 'Review submitted successfully! It will be displayed once approved.');
     }
 }

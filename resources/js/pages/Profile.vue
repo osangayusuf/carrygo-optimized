@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { home } from '@/routes';
 
 const props = defineProps<{
     user: {
@@ -216,7 +217,7 @@ function share() {
             <!-- Quick Actions -->
             <div class="mt-12 text-center">
                 <Link
-                    href="/"
+                    :href="home.url()"
                     class="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline"
                 >
                     <span class="material-symbols-outlined text-lg!"
