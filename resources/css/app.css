@@ -6,8 +6,8 @@
 @source '../js/**/*.vue';
 
 /*
- * CarryGo palette — https://coolors.co/4f7cac-c0e0de-162521-3c474b-9eefe5
- * #4f7cac blue · #c0e0de mint · #162521 ink · #3c474b slate · #9eefe5 aqua
+ * CarryGo palette — https://coolors.co/10b981-c0e0de-162521-3c474b-9eefe5
+ * #10b981 green · #c0e0de mint · #162521 ink · #3c474b slate · #9eefe5 aqua
  */
 @theme inline {
     --font-sans:
@@ -20,14 +20,14 @@
         Inter, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji';
 
-    --color-primary: #4f7cac;
-    --color-primary-container: #9eefe5;
-    --color-primary-fixed: #c0e0de;
-    --color-primary-fixed-dim: #7eb8d4;
+    --color-primary: #10b981;
+    --color-primary-container: #a7f3d0;
+    --color-primary-fixed: #d1fae5;
+    --color-primary-fixed-dim: #6ee7b7;
     --color-on-primary: #ffffff;
-    --color-on-primary-container: #0a2f42;
-    --color-on-primary-fixed: #162521;
-    --color-on-primary-fixed-variant: #3c474b;
+    --color-on-primary-container: #064e3b;
+    --color-on-primary-fixed: #022c22;
+    --color-on-primary-fixed-variant: #065f46;
 
     --color-secondary: #3c474b;
     --color-secondary-container: #d8ebe9;
@@ -49,7 +49,7 @@
 
     --color-background: #f5faf9;
     --color-surface: #f7f9fb;
-    --color-surface-tint: #4f7cac;
+    --color-surface-tint: #10b981;
     --color-surface-dim: #d8dadc;
     --color-surface-bright: #f7f9fb;
     --color-surface-container-lowest: #ffffff;

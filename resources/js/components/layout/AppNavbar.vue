@@ -122,7 +122,7 @@ function navItemClass(href: string): string {
     <nav class="glass-nav sticky top-0 z-50 shadow-sm dark:shadow-none">
         <div class="relative mx-auto flex w-full max-w-screen-2xl items-center justify-between px-8 py-4">
             <Link :href="home.url()" class="font-headline text-2xl font-black tracking-tighter text-primary">
-                CarryGo
+                <img src="logo.png" class="h-10 w-auto object-contain">
             </Link>
 
             <div class="hidden items-center space-x-8 md:flex">
