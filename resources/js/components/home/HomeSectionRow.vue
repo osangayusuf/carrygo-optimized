@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 
-const props = defineProps<{
+defineProps<{
     title: string;
     viewMoreRoute?: string;
     viewMoreText?: string;
@@ -14,13 +14,11 @@ const props = defineProps<{
             <h2 class="font-headline text-2xl md:text-4xl font-extrabold tracking-tighter py-2">
                 {{ title }}
             </h2>
-            <Link
-                v-if="viewMoreRoute"
-                :href="viewMoreRoute"
-                class="group flex items-center gap-1 text-sm font-bold text-primary hover:text-primary/80 transition-colors"
-            >
+            <Link v-if="viewMoreRoute" :href="viewMoreRoute"
+                class="group flex items-center gap-1 text-sm font-bold text-primary hover:text-primary/80 transition-colors">
                 {{ viewMoreText ?? 'View More' }}
-                <span class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">chevron_right</span>
+                <span
+                    class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">chevron_right</span>
             </Link>
         </div>
 

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CarryGo – Nigeria's Biggest E-Auction Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-marquee">
+    <span>🔥 LIVE AUCTION: Duffel Bag @ ₦150,000 &nbsp;|&nbsp; 🏆 Gucci Sunglasses – 65/3500 bids &nbsp;|&nbsp; ⚡ Prada Suede Olive – 9% progress! &nbsp;|&nbsp; 🎁 White Fendi Shirt – ₦50,000 &nbsp;|&nbsp; 💎 Denim Backpack – Only 40 bids so far &nbsp;|&nbsp; 🚀 New auction drops every Monday!</span>
+  </div>
+  <div class="topbar-links">
+    <a href="#">Sell With Us</a>
+    <a href="#">Help Centre</a>
+    <a href="#">Track Bid</a>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-inner">
+    <a class="logo-wrap" href="#">
+      <img class="logo-img" src="../public/logo.png" alt="CarryGo">
+    </a>
+    <div class="search-bar">
+      <input type="text" placeholder="Search luxury items, brands, auctions...">
+      <button>🔍</button>
+    </div>
+    <div class="nav-actions">
+      <button class="notif-btn">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div class="badge">2</div>
+      </button>
+      <button class="btn-login">Log In / Sign Up</button>
+    </div>
+  </div>
+</nav>
+
+<!-- SUB NAV -->
+<div class="subnav">
+  <div class="subnav-inner">
+    <a href="#" class="active">🏠 Home</a>
+    <a href="#">🔥 Trending</a>
+    <a href="#">📦 Open Bids</a>
+    <a href="#">🎉 Event Items</a>
+    <a href="#">📜 History</a>
+    <a href="#">🏆 Leaderboard</a>
+    <a href="#">✅ Tasks</a>
+    <a href="#">💎 Premium</a>
+    <a href="#">👟 Fashion</a>
+    <a href="#">📱 Electronics</a>
+    <a href="#">👜 Accessories</a>
+  </div>
+</div>
+
+<!-- HERO — 3-COLUMN: Categories | Main Banner | Sidebar -->
+<div class="hero-wrap">
+
+  <!-- LEFT CATEGORIES NAV -->
+  <div class="hero-cats-nav">
+    <a href="#"><span>👜</span> Bags <span class="cat-arrow">›</span></a>
+    <a href="#"><span>👗</span> Fashion <span class="cat-arrow">›</span></a>
+    <a href="#"><span>📱</span> Electronics <span class="cat-arrow">›</span></a>
+    <a href="#"><span>👟</span> Footwear <span class="cat-arrow">›</span></a>
+    <a href="#"><span>💍</span> Jewellery <span class="cat-arrow">›</span></a>
+    <a href="#"><span>🕶️</span> Accessories <span class="cat-arrow">›</span></a>
+    <a href="#"><span>⌚</span> Watches <span class="cat-arrow">›</span></a>
+    <a href="#"><span>🎮</span> Gaming <span class="cat-arrow">›</span></a>
+    <a href="#"><span>🔥</span> Trending <span class="cat-arrow">›</span></a>
+    <a href="#"><span>📦</span> Open Bids <span class="cat-arrow">›</span></a>
+    <a href="#"><span>🎉</span> Event Items <span class="cat-arrow">›</span></a>
+    <a href="#"><span>📜</span> Bid History <span class="cat-arrow">›</span></a>
+  </div>
+
+  <!-- MAIN BANNER -->
+  <div class="hero-banner">
+    <div class="hero-banner-left">
+      <div class="hero-badge-pill">🇳🇬 Nigeria's #1 Auction Platform</div>
+      <h1 class="hero-h1">Win More.<span>Carry More.</span></h1>
+      <p class="hero-sub">Bid on premium luxury items. Pay nothing if you lose.</p>
+      <div class="hero-btns">
+        <button class="hero-btn-solid">🔥 Start Bidding</button>
+        <button class="hero-btn-outline">How It Works</button>
+      </div>
+      <div class="hero-stats">
+        <div><span class="hero-stat-num">50K+</span><span class="hero-stat-lbl">Happy Winners</span></div>
+        <div><span class="hero-stat-num">₦0</span><span class="hero-stat-lbl">Lost Bid Cost</span></div>
+        <div><span class="hero-stat-num">100%</span><span class="hero-stat-lbl">Transparent</span></div>
+      </div>
+    </div>
+    <div class="hero-banner-right">
+      <div class="hero-carousel" id="heroCarousel">
+        <div class="hero-carousel-track" id="heroTrack">
+
+          <div class="hero-carousel-slide">
+            <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop" alt="Duffel Bag">
+            <span class="slide-label">Duffel Bag</span>
+            <span class="slide-price">₦150,000</span>
+          </div>
+
+          <div class="hero-carousel-slide">
+            <img src="https://images.unsplash.com/photo-1622560480654-d96214fdc887?w=400&h=400&fit=crop" alt="Denim Backpack">
+            <span class="slide-label">Denim Backpack</span>
+            <span class="slide-price">₦100,000</span>
+          </div>
+
+          <div class="hero-carousel-slide">
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop" alt="Prada Suede">
+            <span class="slide-label">Prada Suede Olive</span>
+            <span class="slide-price">₦50,000</span>
+          </div>
+
+          <div class="hero-carousel-slide">
+            <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400&h=400&fit=crop" alt="Gucci Sunglasses">
+            <span class="slide-label">Gucci Sunglasses</span>
+            <span class="slide-price">₦25,000</span>
+          </div>
+
+          <div class="hero-carousel-slide">
+            <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&h=400&fit=crop" alt="Fendi Shirt">
+            <span class="slide-label">White Fendi Shirt</span>
+            <span class="slide-price">₦50,000</span>
+          </div>
+
+        </div>
+
+        <button class="hero-carousel-prev" id="heroPrev">&#8249;</button>
+        <button class="hero-carousel-next" id="heroNext">&#8250;</button>
+
+        <div class="hero-carousel-dots" id="heroDots">
+          <span class="active"></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDEBAR -->
+  <div class="hero-sidebar">
+
+    <div class="sidebar-card">
+      <div class="sidebar-icon phone">📞</div>
+      <div>
+        <span class="sidebar-text-title">CALL TO ORDER</span>
+        <span class="sidebar-text-sub">0201-888-3300</span>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-icon store">🏪</div>
+      <div>
+        <span class="sidebar-text-title">Sell With Us</span>
+        <span class="sidebar-text-sub">List your luxury items</span>
+      </div>
+      <span class="sidebar-arrow">›</span>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-icon book">📋</div>
+      <div>
+        <span class="sidebar-text-title">How to Bid</span>
+        <span class="sidebar-text-sub">Learn the rules</span>
+      </div>
+      <span class="sidebar-arrow">›</span>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-icon box">📦</div>
+      <div>
+        <span class="sidebar-text-title">Track Your Bid</span>
+        <span class="sidebar-text-sub">Check bid status</span>
+      </div>
+      <span class="sidebar-arrow">›</span>
+    </div>
+
+    <div class="sidebar-force">
+      <div class="sidebar-force-inner">
+        <span class="sidebar-force-title">CARRYGO ⭐<br>FORCE</span>
+        <span class="sidebar-force-sub">Premium Member Club</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PRODUCT STRIP (4 live items below hero) -->
+<div class="product-strip">
+
+  <div class="pcard">
+    <div class="pcard-img">
+      <img src="https://images.unsplash.com/photo-1622560480654-d96214fdc887?w=400&h=300&fit=crop" alt="Denim Backpack">
+      <span class="pcard-live">LIVE</span>
+      <span class="pcard-pct">0%</span>
+    </div>
+    <div class="pcard-body">
+      <div class="pcard-name">Denim Backpack</div>
+      <div class="pcard-price">₦100,000</div>
+      <div class="pcard-bar-wrap"><div class="pcard-bar-fill" style="width:0.4%"></div></div>
+      <div class="pcard-pts">40 / 9,000 pts</div>
+      <button class="pcard-btn">Place Bid</button>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-img">
+      <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&h=300&fit=crop" alt="White Fendi Shirt">
+      <span class="pcard-live">LIVE</span>
+      <span class="pcard-pct hot">HOT 🔥</span>
+    </div>
+    <div class="pcard-body">
+      <div class="pcard-name">White Fendi Shirt</div>
+      <div class="pcard-price">₦50,000</div>
+      <div class="pcard-bar-wrap"><div class="pcard-bar-fill" style="width:1%"></div></div>
+      <div class="pcard-pts">40 / 5,000 pts</div>
+      <button class="pcard-btn">Place Bid</button>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-img">
+      <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400&h=300&fit=crop" alt="Gucci Sunglasses">
+      <span class="pcard-live">LIVE</span>
+      <span class="pcard-pct">2%</span>
+    </div>
+    <div class="pcard-body">
+      <div class="pcard-name">Gucci Sunglasses</div>
+      <div class="pcard-price">₦25,000</div>
+      <div class="pcard-bar-wrap"><div class="pcard-bar-fill" style="width:2%"></div></div>
+      <div class="pcard-pts">65 / 3,500 pts</div>
+      <button class="pcard-btn">Place Bid</button>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-img">
+      <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop" alt="Prada Suede Olive">
+      <span class="pcard-live">LIVE</span>
+      <span class="pcard-pct hot">9% 🔥</span>
+    </div>
+    <div class="pcard-body">
+      <div class="pcard-name">Prada Suede Olive</div>
+      <div class="pcard-price">₦50,000</div>
+      <div class="pcard-bar-wrap"><div class="pcard-bar-fill" style="width:9%"></div></div>
+      <div class="pcard-pts">520 / 6,000 pts</div>
+      <button class="pcard-btn">Place Bid</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- LIVE TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item"><span class="dot"></span> Duffel Bag <span class="price">₦150,000</span><span class="ticker-live">LIVE</span></span>
+    <span class="ticker-item"><span class="dot"></span> White Fendi Shirt <span class="price">₦50,000</span><span class="ticker-live">LIVE</span></span>
+    <span class="ticker-item"><span class="dot"></span> Gucci Sunglasses <span class="price">₦25,000</span><span class="ticker-live">LIVE</span></span>
+    <span class="ticker-item"><span class="dot"></span> Prada Suede Olive <span class="price">₦50,000</span><span class="ticker-live">LIVE</span></span>
+    <span class="ticker-item"><span class="dot"></span> Denim Backpack <span class="price">₦100,000</span><span class="ticker-live">LIVE</span></span>
+    <span class="ticker-item"><span class="dot"></span> Samsung Galaxy S24 <span class="price">₦280,000</span><span class="ticker-live">LIVE</span></span>
+    <span class="ticker-item"><span class="dot"></span> Nike Air Max 97 <span class="price">₦45,000</span><span class="ticker-live">LIVE</span></span>
+    <span class="ticker-item"><span class="dot"></span> MacBook Air M2 <span class="price">₦680,000</span><span class="ticker-live">LIVE</span></span>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="section">
+  <div class="sec-header">
+    <div class="sec-title">Browse Categories</div>
+    <a href="#" class="view-all">View All →</a>
+  </div>
+  <div class="cats">
+    <div class="cat-card"><div class="cat-icon">👜</div><div class="cat-name">Bags</div></div>
+    <div class="cat-card"><div class="cat-icon">👗</div><div class="cat-name">Fashion</div></div>
+    <div class="cat-card"><div class="cat-icon">📱</div><div class="cat-name">Electronics</div></div>
+    <div class="cat-card"><div class="cat-icon">👟</div><div class="cat-name">Footwear</div></div>
+    <div class="cat-card"><div class="cat-icon">💍</div><div class="cat-name">Jewellery</div></div>
+    <div class="cat-card"><div class="cat-icon">🕶️</div><div class="cat-name">Accessories</div></div>
+    <div class="cat-card"><div class="cat-icon">⌚</div><div class="cat-name">Watches</div></div>
+    <div class="cat-card"><div class="cat-icon">🎮</div><div class="cat-name">Gaming</div></div>
+  </div>
+</div>
+
+<!-- TRENDING BIDS -->
+<div class="section">
+  <div class="sec-header">
+    <div class="sec-title">🔥 Trending Bids</div>
+    <a href="#" class="view-all">View More →</a>
+  </div>
+  <div class="carousel-wrap" style="padding:0 12px">
+    <button class="carousel-btn prev" onclick="slide('trending',-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="carousel-track" id="trending">
+      <div class="item-card"><div class="item-img"><img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=200&fit=crop" alt="Duffel Bag"><span class="live-badge">LIVE</span></div><div class="item-body"><div class="item-name">Duffel Bag</div><div class="item-price">₦150,000</div><div class="progress-wrap"><div class="progress-info"><span>40/10,000 pts</span><span>0%</span></div><div class="progress-bar"><div class="progress-fill" style="width:0.4%"></div></div></div><button class="btn-bid">Place Bid</button></div></div>
+      <div class="item-card"><div class="item-img"><img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=300&h=200&fit=crop" alt="Fendi Shirt"><span class="live-badge">LIVE</span><span class="hot-badge">HOT</span></div><div class="item-body"><div class="item-name">White Fendi Shirt</div><div class="item-price">₦50,000</div><div class="progress-wrap"><div class="progress-info"><span>40/5,000 pts</span><span>1%</span></div><div class="progress-bar"><div class="progress-fill" style="width:1%"></div></div></div><button class="btn-bid">Place Bid</button></div></div>
+      <div class="item-card"><div class="item-img"><img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=300&h=200&fit=crop" alt="Gucci Sunglasses"><span class="live-badge">LIVE</span></div><div class="item-body"><div class="item-name">Gucci Black Sunglasses</div><div class="item-price">₦25,000</div><div class="progress-wrap"><div class="progress-info"><span>65/3,500 pts</span><span>2%</span></div><div class="progress-bar"><div class="progress-fill" style="width:2%"></div></div></div><button class="btn-bid">Place Bid</button></div></div>
+      <div class="item-card"><div class="item-img"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=200&fit=crop" alt="Prada Suede"><span class="live-badge">LIVE</span><span class="hot-badge">🔥 9%</span></div><div class="item-body"><div class="item-name">Prada Suede Olive</div><div class="item-price">₦50,000</div><div class="progress-wrap"><div class="progress-info"><span>520/6,000 pts</span><span>9%</span></div><div class="progress-bar"><div class="progress-fill" style="width:9%"></div></div></div><button class="btn-bid">Place Bid</button></div></div>
+      <div class="item-card"><div class="item-img"><img src="https://images.unsplash.com/photo-1622560480654-d96214fdc887?w=300&h=200&fit=crop" alt="Denim Backpack"><span class="live-badge">LIVE</span></div><div class="item-body"><div class="item-name">Denim Backpack</div><div class="item-price">₦100,000</div><div class="progress-wrap"><div class="progress-info"><span>40/9,000 pts</span><span>0%</span></div><div class="progress-bar"><div class="progress-fill" style="width:0.4%"></div></div></div><button class="btn-bid">Place Bid</button></div></div>
+      <div class="item-card"><div class="item-img"><img src="https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=300&h=200&fit=crop" alt="Samsung"><span class="live-badge">LIVE</span><span class="hot-badge">NEW</span></div><div class="item-body"><div class="item-name">Samsung Galaxy S24</div><div class="item-price">₦280,000</div><div class="progress-wrap"><div class="progress-info"><span>120/8,000 pts</span><span>2%</span></div><div class="progress-bar"><div class="progress-fill" style="width:2%"></div></div></div><button class="btn-bid">Place Bid</button></div></div>
+    </div>
+    <button class="carousel-btn next" onclick="slide('trending',1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+  </div>
+</div>
+
+<!-- FEATURE BANNERS -->
+<div class="section">
+  <div class="banners">
+    <div class="banner a">
+      <div class="banner-text">
+        <div class="banner-label">🎯 Task Center</div>
+        <div class="banner-title">Win More<br>Points Free!</div>
+        <div class="banner-desc">Complete simple tasks to earn bidding points and increase your chances of winning luxury items.</div>
+        <button class="btn-banner">Visit Task Center →</button>
+      </div>
+      <div class="banner-art">🏆</div>
+    </div>
+    <div class="banner b">
+      <div class="banner-text">
+        <div class="banner-label">🔒 Verified Integrity</div>
+        <div class="banner-title">100% Fair<br>&amp; Secure!</div>
+        <div class="banner-desc">Every bid is recorded on our secure database. Fully transparent, fully trustworthy auction process.</div>
+        <button class="btn-banner">Learn More →</button>
+      </div>
+      <div class="banner-art">🛡️</div>
+    </div>
+  </div>
+</div>
+
+<!-- LIVE OPPORTUNITIES -->
+<div class="section">
+  <div class="sec-header">
+    <div class="sec-title">⚡ Live Opportunities</div>
+    <a href="#" class="view-all">View All →</a>
+  </div>
+  <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+    <select style="padding:7px 12px;border-radius:7px;border:1px solid var(--border);font-family:inherit;font-size:13px;background:#fff"><option>Most Recent</option><option>Lowest Price</option><option>Highest Progress</option></select>
+    <input type="text" placeholder="🔍 Search premium items..." style="flex:1;padding:7px 14px;border-radius:7px;border:1px solid var(--border);font-family:inherit;font-size:13px;min-width:180px">
+  </div>
+  <div class="carousel-wrap" style="padding:0 12px">
+    <button class="carousel-btn prev" onclick="slide('live',-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="carousel-track" id="live">
+      <div class="item-card"><div class="item-img"><img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=200&fit=crop" alt="Duffel Bag"><span class="live-badge">LIVE</span><div class="open-icon">↗</div></div><div class="item-body"><div class="item-name">Duffel Bag</div><div class="item-price">₦150,000</div><div class="progress-wrap"><div class="progress-info"><span>40/10,000 pts</span><span>0%</span></div><div class="progress-bar"><div class="progress-fill" style="width:0.4%"></div></div></div><button class="btn-bid">Place Bid</button></div></div>
+      <div class="item-card"><div class="item-img"><img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=300&h=200&fit=crop" alt="Fendi"><span class="live-badge">LIVE</span><div class="open-icon">↗</div></div><div class="item-body"><div class="item-name">White Fendi Shirt</div><div class="item-price">₦50,000</div><div class="progress-wrap"><div class="progress-info"><span>40/5,000 pts</span><span>1%</span></div><div class="progress-bar"><div class="progress-fill" style="width:1%"></div></div></div><button class="btn-bid">Place Bid</button></div></div>
+      <div class="item-card"><div class="item-img"><img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=300&h=200&fit=crop" alt="Gucci"><span class="live-badge">LIVE</span><div class="open-icon">↗</div></div><div class="item-body"><div class="item-name">Gucci Black Acetate Sunglasses</div><div class="item-price">₦25,000</div><div class="progress-wrap"><div class="progress-info"><span>65/3,500 pts</span><span>2%</span></div><div class="progress-bar"><div class="progress-fill" style="width:2%"></div></div></div><button class="btn-bid">Place Bid</button></div></div>
+      <div class="item-card"><div class="item-img"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=200&fit=crop" alt="Prada"><span class="live-badge">LIVE</span><div class="open-icon">↗</div></div><div class="item-body"><div class="item-name">Prada Suede Olive</div><div class="item-price">₦50,000</div><div class="progress-wrap"><div class="progress-info"><span>520/6,000 pts</span><span>9%</span></div><div class="progress-bar"><div class="progress-fill" style="width:9%"></div></div></div><button class="btn-bid">Place Bid</button></div></div>
+      <div class="item-card"><div class="item-img"><img src="https://images.unsplash.com/photo-1622560480654-d96214fdc887?w=300&h=200&fit=crop" alt="Denim Backpack"><span class="live-badge">LIVE</span><div class="open-icon">↗</div></div><div class="item-body"><div class="item-name">Denim Backpack</div><div class="item-price">₦100,000</div><div class="progress-wrap"><div class="progress-info"><span>40/9,000 pts</span><span>0%</span></div><div class="progress-bar"><div class="progress-fill" style="width:0.4%"></div></div></div><button class="btn-bid">Place Bid</button></div></div>
+    </div>
+    <button class="carousel-btn next" onclick="slide('live',1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div class="section">
+  <div class="sec-header"><div class="sec-title">💬 What Our Community Says</div></div>
+  <div style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:18px">Hear from winners who have scored amazing bids on CarryGo</div>
+  <div class="testi-grid">
+    <div class="testi-card"><div class="stars">★★★★★</div><div class="testi-text">"Good aesthetic — honestly better than I expected. I placed a bid and won the next day!"</div><div class="testi-user"><div class="testi-avatar">👤</div><div><div class="testi-name">+234 805 *** 6556</div><div class="testi-role">Verified Bidder</div></div></div><span class="testi-item-tag">Item: Tag – Feminine Shirt</span></div>
+    <div class="testi-card"><div class="stars">★★★★★</div><div class="testi-text">"Wow I'm very excited and grateful for this opportunity, it's so amazing for me to win this item all thanks to CarryGo bid!"</div><div class="testi-user"><div class="testi-avatar">👤</div><div><div class="testi-name">+234 705 *** 9018</div><div class="testi-role">Verified Bidder</div></div></div><span class="testi-item-tag">Item: Tag – Feminine Shirt</span></div>
+    <div class="testi-card"><div class="stars">★★★★★</div><div class="testi-text">"Got a very big fish — a Samsung Galaxy Note 20! The administration is perfectly transparent. Five stars!"</div><div class="testi-user"><div class="testi-avatar">👤</div><div><div class="testi-name">+234 815 *** 0159</div><div class="testi-role">Verified Bidder</div></div></div><span class="testi-item-tag">Item: Samsung GALAXY NOTE 20</span></div>
+  </div>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item"><div class="trust-icon">🚀</div><div class="trust-title">Fast Delivery</div><div class="trust-desc">Winners receive items within 3–5 working days nationwide</div></div>
+    <div class="trust-item"><div class="trust-icon">🔒</div><div class="trust-title">Secure Payments</div><div class="trust-desc">All transactions protected with bank-grade encryption</div></div>
+    <div class="trust-item"><div class="trust-icon">🏆</div><div class="trust-title">Verified Winners</div><div class="trust-desc">Every winner is verified before item dispatch</div></div>
+    <div class="trust-item"><div class="trust-icon">💬</div><div class="trust-title">24/7 Support</div><div class="trust-desc">Our team is available round-the-clock for assistance</div></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo"><img src="carrygo_logo.jpeg" alt="CarryGo"></div>
+      <div class="footer-tagline">Redefining the digital auction experience through transparency, curation, and elite service. Your gateway to exclusive opportunities.</div>
+      <div class="social-row"><div class="social-btn">📸</div><div class="social-btn">👥</div><div class="social-btn">🐦</div><div class="social-btn">▶️</div></div>
+    </div>
+    <div class="footer-col"><h4>Auctions</h4><a href="#">Trending Now</a><a href="#">Open Bids</a><a href="#">Event Items</a><a href="#">Leaderboard</a><a href="#">How to Play</a></div>
+    <div class="footer-col"><h4>Account &amp; Support</h4><a href="#">My Profile</a><a href="#">Task Center</a><a href="#">Winning History</a><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Contact Support</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 CarryGo Executive. All rights reserved.</span>
+    <div class="footer-bottom-links"><a href="#">Cookie Settings</a><a href="#">Security</a><a href="#">Privacy</a></div>
+  </div>
+</footer>
+
+<script>
+  const offsets={trending:0,live:0};
+  function slide(id,dir){
+    const track=document.getElementById(id);
+    const cardW=track.children[0].offsetWidth+14;
+    const max=Math.max(0,track.children.length-4);
+    offsets[id]=Math.max(0,Math.min(offsets[id]+dir,max));
+    track.style.transform=`translateX(-${offsets[id]*cardW}px)`;
+  }
+  setInterval(()=>{const t=document.getElementById('trending');const w=t.children[0].offsetWidth+14;const m=Math.max(1,t.children.length-4);offsets.trending=(offsets.trending+1)%m;t.style.transform=`translateX(-${offsets.trending*w}px)`},3500);
+  setInterval(()=>{const t=document.getElementById('live');const w=t.children[0].offsetWidth+14;const m=Math.max(1,t.children.length-4);offsets.live=(offsets.live+1)%m;t.style.transform=`translateX(-${offsets.live*w}px)`},4500);
+  document.querySelectorAll('.progress-fill').forEach(b=>{const w=b.style.width;b.style.width='0';setTimeout(()=>b.style.width=w,300)});
+
+  // ── HERO CAROUSEL ──
+  (function(){
+    const track  = document.getElementById('heroTrack');
+    const dots   = document.querySelectorAll('#heroDots span');
+    const slides = track.querySelectorAll('.hero-carousel-slide');
+    const total  = slides.length;
+    let cur = 0, autoTimer, startX = 0, isDragging = false;
+
+    function goTo(idx){
+      cur = (idx + total) % total;
+      track.style.transform = `translateX(-${cur * 100}%)`;
+      dots.forEach((d,i) => d.classList.toggle('active', i === cur));
+    }
+
+    document.getElementById('heroPrev').addEventListener('click', () => { clearInterval(autoTimer); goTo(cur - 1); startAuto(); });
+    document.getElementById('heroNext').addEventListener('click', () => { clearInterval(autoTimer); goTo(cur + 1); startAuto(); });
+    dots.forEach((d, i) => d.addEventListener('click', () => { clearInterval(autoTimer); goTo(i); startAuto(); }));
+
+    // Touch / mouse swipe
+    const carousel = document.getElementById('heroCarousel');
+    carousel.addEventListener('touchstart',  e => { startX = e.touches[0].clientX; }, {passive:true});
+    carousel.addEventListener('touchend',    e => { const dx = e.changedTouches[0].clientX - startX; if(Math.abs(dx)>40){ clearInterval(autoTimer); goTo(dx < 0 ? cur+1 : cur-1); startAuto(); } }, {passive:true});
+    carousel.addEventListener('mousedown',   e => { startX = e.clientX; isDragging = true; });
+    carousel.addEventListener('mouseup',     e => { if(!isDragging) return; isDragging = false; const dx = e.clientX - startX; if(Math.abs(dx)>40){ clearInterval(autoTimer); goTo(dx < 0 ? cur+1 : cur-1); startAuto(); } });
+    carousel.addEventListener('mouseleave',  () => { isDragging = false; });
+
+    function startAuto(){ autoTimer = setInterval(() => goTo(cur + 1), 3000); }
+    startAuto();
+  })();
+</script>
+</body>
+</html>

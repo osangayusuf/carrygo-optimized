@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Link, router, useForm, usePage } from '@inertiajs/vue3';
-import { useDebounceFn, useNow } from '@vueuse/core';
-import { ref, onMounted, computed } from 'vue';
+import { useNow } from '@vueuse/core';
+import { ref, onMounted } from 'vue';
 import { formatPrice } from '@/lib/utils';
 import type { Bid } from '@/pages/Home.vue';
-import { trending, login, home } from '@/routes';
+import { trending, login } from '@/routes';
 import { place } from '@/routes/bids';
 
 const props = defineProps<{
@@ -12,43 +12,6 @@ const props = defineProps<{
     categories: string[];
     userPoints: number | null;
 }>();
-
-const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
-const search = ref(params.get('search') ?? '');
-const sort = ref(params.get('sort') ?? 'recent');
-const category = ref(params.get('category') ?? '');
-
-const sortOptions = [
-    { value: 'recent', label: 'Most Recent' },
-    { value: 'value_desc', label: 'Value: High to Low' },
-];
-
-const sortLabel = computed(
-    () => sortOptions.find((o) => o.value === sort.value)?.label ?? 'Sort By',
-);
-
-function visit(extra: Record<string, string | number> = {}) {
-    router.get(
-        home.url(),
-        {
-            ...(search.value ? { search: search.value } : {}),
-            ...(sort.value !== 'recent' ? { sort: sort.value } : {}),
-            ...(category.value ? { category: category.value } : {}),
-            ...extra,
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-        },
-    );
-}
-
-const onSearch = useDebounceFn(() => visit(), 400);
-
-function onSortChange() {
-    visit();
-}
 
 function progressPct(bid: Bid): number {
     if (!bid.open_points) {
@@ -167,28 +130,6 @@ defineExpose({
             <h2 class="font-headline text-2xl md:text-4xl font-extrabold tracking-tighter py-2">
                 Live Opportunities
             </h2>
-            <div class="flex w-full flex-col gap-4 sm:flex-row md:w-auto">
-                <div class="group relative">
-                    <span
-                        class="material-symbols-outlined absolute top-1/2 left-4 -translate-y-1/2 text-outline">search</span>
-                    <input v-model="search"
-                        class="w-full rounded-full border-none bg-surface-container-low py-3.5 pr-6 pl-12 text-sm font-medium focus:ring-2 focus:ring-primary-container sm:w-[300px]"
-                        placeholder="Search premium items..." type="search" @input="onSearch" />
-                </div>
-                <div class="relative">
-                    <div
-                        class="flex cursor-pointer items-center rounded-full bg-surface-container-low px-6 py-3.5 transition-colors hover:bg-surface-container-high">
-                        <span class="mr-4 text-sm font-bold text-on-surface-variant">{{ sortLabel }}</span>
-                        <span class="material-symbols-outlined text-sm">expand_more</span>
-                    </div>
-                    <select v-model="sort" class="absolute inset-0 w-full cursor-pointer appearance-none opacity-0"
-                        @change="onSortChange">
-                        <option v-for="opt in sortOptions" :key="opt.value" :value="opt.value">
-                            {{ opt.label }}
-                        </option>
-                    </select>
-                </div>
-            </div>
         </div>
 
         <!-- Empty state -->

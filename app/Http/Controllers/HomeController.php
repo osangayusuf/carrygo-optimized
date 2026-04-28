@@ -60,28 +60,19 @@ class HomeController extends Controller
                 ]);
         }
 
-        $bids = Bid::query()
+        $baseQ = Bid::query()->when($request->search, function ($q, $search) {
+            $q->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('price', 'like', "%{$search}%");
+            });
+        });
+
+        $bids = $baseQ
             ->with(['bidActive'])
             ->whereIn('status', [BidStatus::Upcoming, BidStatus::Live])
             ->withSum('bidEntries as bid_entry_points', 'points')
             ->withSum('bidActives as bid_active_points', 'points')
-            ->when($request->search, function ($q, $search) {
-                $q->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                        ->orWhere('price', 'like', "%{$search}%");
-                });
-            })
-            ->when($request->category, fn ($q, $category) => $q->where('category', $category))
-            ->when(
-                $request->sort === 'value_desc',
-                fn ($q) => $q->orderByDesc('price'),
-                fn ($q) => $q->orderByDesc(
-                    BidEntry::select('created_at')
-                        ->whereColumn('bidid', 'carrygo_bid.id')
-                        ->latest()
-                        ->limit(1)
-                )
-            )
+            ->inRandomOrder()
             ->limit(12)
             ->get(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at']);
 
@@ -123,7 +114,7 @@ class HomeController extends Controller
             ->limit(6)
             ->get();
 
-        $trendingBids = Bid::query()
+        $trendingBids = $baseQ
             ->with('bidActive')
             ->whereIn('status', [BidStatus::Upcoming, BidStatus::Live])
             ->withSum('bidEntries as bid_entry_points', 'points')
@@ -146,8 +137,7 @@ class HomeController extends Controller
             return $bid;
         });
 
-        $openBids = Bid::query()
-            ->with('bidActive')
+        $openBids = $baseQ->with('bidActive')
             ->where('status', BidStatus::Live)
             ->has('bidActive')
             ->withSum('bidActives as bid_active_points', 'points')
@@ -167,9 +157,7 @@ class HomeController extends Controller
         $topCategories = $categories->take(4);
         $categoryBids = [];
         foreach ($topCategories as $cat) {
-            $catBids = Bid::query()
-                ->with('bidActive')
-                ->whereIn('status', [BidStatus::Upcoming, BidStatus::Live])
+            $catBids = $baseQ->with('bidActive')
                 ->where('category', $cat)
                 ->orderByDesc('id')
                 ->limit(10)
@@ -185,9 +173,7 @@ class HomeController extends Controller
             $categoryBids[$cat] = $catBids;
         }
 
-        $luxuryBids = Bid::query()
-            ->with('bidActive')
-            ->whereIn('status', [BidStatus::Upcoming, BidStatus::Live])
+        $luxuryBids = $baseQ->with('bidActive')
             ->orderByRaw("CAST(REPLACE(price, ',', '') AS UNSIGNED) DESC")
             ->limit(10)
             ->get(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at']);
