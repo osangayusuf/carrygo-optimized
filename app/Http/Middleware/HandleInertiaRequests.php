@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Models\Bid;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -35,6 +36,14 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $categories = Bid::query()
+            ->whereNotNull('category')
+            ->where('category', '!=', '')
+            ->distinct()
+            ->orderBy('category', 'asc')
+            ->pluck('category')
+            ->values();
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -42,6 +51,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'notifications' => config('promotions.notifications', []),
+            'categories' => $categories,
         ];
     }
 }

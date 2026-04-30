@@ -38,15 +38,15 @@ class TrendingBidsController extends Controller
             ->withSum('bidEntries as bid_entry_points', 'points')
             ->withSum('bidActives as bid_active_points', 'points')
             ->has('bidEntries')
-            ->when($request->search, fn ($q, $s) => $q->where(fn ($q) => $q->where('name', 'like', "%{$s}%")
-                ->orWhere('price', 'like', "%{$s}%")
-            )
-            )
-            ->when($request->category, fn ($q, $category) => $q->where('category', $category))
+            ->when($request->search, fn($q, $s) => $q->where(
+                fn($q) => $q->where('name', 'like', "%{$s}%")
+                    ->orWhere('price', 'like', "%{$s}%")
+            ))
+            ->when($request->category, fn($q, $category) => $q->where('category', $category))
             ->when(
                 $request->sort === 'value_desc',
-                fn ($q) => $q->orderByDesc('price'),
-                fn ($q) => $q->orderByDesc(
+                fn($q) => $q->orderByDesc('price'),
+                fn($q) => $q->orderByDesc(
                     BidEntry::select('created_at')
                         ->whereColumn('bidid', 'carrygo_bid.id')
                         ->latest()

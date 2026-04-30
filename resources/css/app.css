@@ -19,6 +19,7 @@
     --font-body:
         Inter, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji';
+    --font-condensed: 'Barlow Condensed', sans-serif;
 
     --color-primary: #10b981;
     --color-primary-container: #a7f3d0;
@@ -76,6 +77,23 @@
     --color-on-error-container: #93000a;
 
     --animate-bounce-slow: bounce-slow 3s ease-in-out infinite;
+    --animate-marquee: marquee 28s linear infinite;
+
+    /* Navbar / Home brand colours */
+    --color-navy: #0d1b2a;
+    --color-lemon: #c8e000;
+    --color-forest: #1a472a;
+    --color-forest-dark: #0f2d19;
+    --color-forest-mid: #1a5c2a;
+    --color-amber: #f5e642;
+    --color-muted-green: #3a4a30;
+    --color-ink: #0a0a0a;
+    --color-sage-tint: #f0f5e8;
+
+    /* Hero section typography */
+
+    /* Hero section animations */
+    --animate-float-img: floatImg 4s ease-in-out infinite;
 }
 
 @keyframes bounce-slow {
@@ -85,6 +103,25 @@
     }
     50% {
         transform: translateY(-8px);
+    }
+}
+
+@keyframes marquee {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes floatImg {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-12px);
     }
 }
 
@@ -136,5 +173,13 @@
 
     .hide-scrollbar::-webkit-scrollbar {
         display: none;
+    }
+
+    .hero-banner-right-bg {
+        background: radial-gradient(
+            circle at 60% 50%,
+            var(--color-forest-mid) 0%,
+            var(--color-forest-dark) 70%
+        );
     }
 }
