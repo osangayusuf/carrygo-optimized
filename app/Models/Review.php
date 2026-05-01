@@ -16,6 +16,7 @@ class Review extends Model
     protected function casts(): array
     {
         return [
+            'rating' => 'integer',
             'created_at' => 'datetime',
         ];
     }

@@ -52,6 +52,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'notifications' => config('promotions.notifications', []),
             'categories' => $categories,
+            'asset_url' => rtrim(asset(''), '/') . '/',
         ];
     }
 }

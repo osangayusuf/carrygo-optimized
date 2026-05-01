@@ -3,6 +3,7 @@ import { Link, usePage } from '@inertiajs/vue3';
 import { router } from '@inertiajs/vue3';
 import { useDebounceFn } from '@vueuse/core';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { formatDate } from '@/lib/utils';
 import {
     events,
     history,
@@ -15,7 +16,6 @@ import {
     tasks,
     trending,
 } from '@/routes';
-import { formatDate } from '@/lib/utils';
 
 interface Notification {
     id: number;
@@ -28,14 +28,11 @@ interface Notification {
 }
 
 const page = usePage();
-const mobileOpen = ref(false);
 const notificationsOpen = ref(false);
-const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
+const currentPath = computed(() => page.url.split('?')[0]);
 
 
 const notifications = computed<Notification[]>(() => (page.props.notifications as Notification[]) ?? []);
-
-const categories = computed<string[]>(() => (page.props.categories as string[]) ?? []);
 
 const LS_KEY = 'carrygo_read_notification_ids';
 
@@ -76,20 +73,27 @@ function closeNotifications(event: MouseEvent): void {
 onMounted(() => document.addEventListener('click', closeNotifications));
 onBeforeUnmount(() => document.removeEventListener('click', closeNotifications));
 
-const search = ref(params.get('search') ?? '');
+const search = ref(new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').get('search') ?? '');
 
 function visit(extra: Record<string, string | number> = {}) {
+    const currentParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+    const existing: Record<string, string> = {};
+    currentParams.forEach((value, key) => {
+        existing[key] = value;
+    });
+
     router.get(
-        home.url(),
+        currentPath.value,
         {
-            ...(search.value ? { search: search.value } : {}),
+            ...existing,
+            ...(search.value ? { search: search.value } : { search: undefined }),
             ...extra,
         },
         { preserveState: true, preserveScroll: true, replace: true }
     );
 }
 
-const onSearch = useDebounceFn(() => visit(), 400);
+const onSearch = useDebounceFn(() => visit({ page: 1 }), 400);
 
 
 const navLinks = [
@@ -112,7 +116,9 @@ const routeMap: Record<string, any> = {
 };
 
 function getNotificationLink(routeKey?: string): string | null {
-    if (!routeKey || !routeMap[routeKey]) return null;
+    if (!routeKey || !routeMap[routeKey]) {
+        return null;
+    }
 
     return routeMap[routeKey].url();
 }
@@ -153,28 +159,96 @@ function navItemClass(href: string): string {
 
         <!-- NAVBAR -->
         <nav class="bg-white border-b-2 border-lemon shadow-md">
-            <div class="max-w-7xl mx-auto flex items-center gap-3 md:gap-10 py-1.5 px-4">
+            <div class="max-w-7xl mx-auto flex items-center gap-3 md:gap-10 py-2 sm:py-1.5 px-4">
                 <Link :href="home.url()" class="flex items-center no-underline shrink-0">
-                    <img class="h-10 w-auto block" src="/logo.png" alt="CarryGo">
+                    <img class="h-7 sm:h-10 w-auto block" :src="`${page.props.asset_url}logo.png`" alt="CarryGo">
                 </Link>
                 <div class="flex-1 flex min-w-0">
                     <input type="text" v-model="search" @input="onSearch"
                         placeholder="Search luxury items, brands, auctions..."
-                        class="flex-1 border-2 border-forest border-r-0 py-2 px-3.5 text-sm font-sans rounded-l-xl outline-none min-w-0">
+                        class="flex-1 border-2 border-forest border-r-0 py-1.5 sm:py-2 px-3.5 text-xs sm:text-sm font-sans rounded-l-xl outline-none min-w-0">
                     <button
                         class="bg-forest text-lemon border-none py-2 px-4.5 text-sm font-bold cursor-pointer rounded-r-xl whitespace-nowrap hover:bg-forest-dark"><i
                             class="pi pi-search"></i></button>
                 </div>
-                <div class="flex items-center gap-2 md:gap-5">
-                    <button class="bg-transparent border-none cursor-pointer relative p-1.5">
-                        <i class="pi pi-bell text-xl text-muted-green"></i>
-                        <div
-                            class="absolute top-0 right-0 bg-ink text-lemon rounded-full w-4 h-4 text-xs font-extrabold flex items-center justify-center">
-                            2</div>
+                <div class="flex items-center gap-2 md:gap-5 relative">
+                    <button id="notification-btn" @click="toggleNotifications"
+                        class="bg-transparent border-none cursor-pointer relative p-1.5">
+                        <i
+                            class="pi pi-bell text-base sm:text-xl text-muted-green hover:text-navy transition-colors"></i>
+                        <div v-if="unreadCount > 0"
+                            class="absolute top-0 right-0 bg-ink text-lemon rounded-full w-4 h-4 text-[10px] font-extrabold flex items-center justify-center">
+                            {{ unreadCount > 9 ? '9+' : unreadCount }}</div>
                     </button>
-                    <Link :href="loginShow.url()"
-                        class="bg-lemon text-navy border-none py-2 px-4.5 rounded-xl text-sm font-extrabold cursor-pointer whitespace-nowrap font-sans hover:bg-amber"
-                        as="button">Log In</Link>
+
+                    <!-- Notification Panel -->
+                    <div v-if="notificationsOpen" id="notification-panel"
+                        class="absolute top-full mt-2 right-0 md:-right-2 w-80 sm:w-96 bg-white border-2 border-lemon shadow-xl rounded-2xl z-50 overflow-hidden flex flex-col max-h-[80vh]">
+                        <div class="flex items-center justify-between px-4 py-3 border-b-2 border-lemon bg-gray-50/50">
+                            <h3 class="font-extrabold text-navy m-0 text-sm font-headline">Notifications</h3>
+                            <button v-if="unreadCount > 0" @click="markAllRead"
+                                class="text-xs text-primary font-bold bg-transparent border-none cursor-pointer hover:text-forest transition-colors p-0">Mark
+                                all read</button>
+                        </div>
+                        <div class="overflow-y-auto overflow-x-hidden hide-scrollbar flex-1 bg-white">
+                            <div v-if="notifications.length === 0"
+                                class="p-8 text-center text-secondary text-sm font-bold flex flex-col items-center justify-center h-full gap-2">
+                                <i class="pi pi-check-circle text-3xl text-gray-300"></i>
+                                You're all caught up!
+                            </div>
+                            <div v-for="notification in notifications" :key="notification.id"
+                                :class="['px-4 py-4 border-b border-gray-100 last:border-b-0 flex gap-3.5 transition-colors', isUnread(notification.id) ? 'bg-forest/5' : 'bg-white hover:bg-gray-50']">
+                                <div class="mt-0.5 shrink-0">
+                                    <span class="material-symbols-outlined text-2xl"
+                                        :class="isUnread(notification.id) ? 'text-forest' : 'text-gray-400'">
+                                        {{ notification.icon || 'notifications' }}
+                                    </span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-start justify-between gap-2 mb-1.5">
+                                        <h4
+                                            :class="['m-0 text-sm leading-tight font-sans', isUnread(notification.id) ? 'font-extrabold text-navy' : 'font-bold text-secondary']">
+                                            {{ notification.title }}</h4>
+                                        <span
+                                            class="text-[10px] text-gray-400 whitespace-nowrap font-bold shrink-0 mt-0.5">{{
+                                                formatDate(notification.created_at) }}</span>
+                                    </div>
+                                    <p class="m-0 text-xs text-secondary leading-relaxed">{{ notification.body }}</p>
+                                    <Link
+                                        v-if="notification.action_route && getNotificationLink(notification.action_route)"
+                                        :href="getNotificationLink(notification.action_route)!"
+                                        class="inline-flex items-center gap-1 mt-2.5 text-xs font-bold text-forest hover:text-forest-dark transition-colors"
+                                        @click="notificationsOpen = false">
+                                        {{ notification.action_label || 'View details' }}
+                                        <i class="pi pi-arrow-right text-[10px]"></i>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <template v-if="!currentUser">
+                        <Link :href="loginShow.url()"
+                            class="bg-lemon text-navy border-none py-2 px-4.5 rounded-xl text-sm font-extrabold cursor-pointer whitespace-nowrap font-sans hover:bg-amber transition-colors"
+                            as="button">Log In</Link>
+                    </template>
+                    <template v-else>
+                        <Link :href="profile.url()"
+                            class="bg-lemon text-navy border-none py-1.5 sm:py-2 px-3.5 md:px-4.5 rounded-xl text-xs sm:text-sm font-extrabold cursor-pointer whitespace-nowrap font-sans hover:bg-amber flex items-center gap-1.5 transition-colors"
+                            as="button">
+                            <i class="pi pi-wallet text-sm text-forest"></i>
+                            <span class="hidden sm:inline">{{ currentUser.active_point?.points ?? 0 }} pts</span>
+                            <span class="sm:hidden">{{ currentUser.active_point?.points ?? 0 }}</span>
+                        </Link>
+                        <Link :href="logoutRoute.url()" method="post"
+                            class="bg-transparent border-2 border-gray-200 text-gray-500 hover:text-navy hover:border-gray-300 py-1.5 px-3 md:px-4 rounded-xl text-sm font-extrabold cursor-pointer whitespace-nowrap transition-colors hidden sm:block"
+                            as="button">Log Out</Link>
+                        <Link :href="logoutRoute.url()" method="post"
+                            class="bg-transparent border-none text-gray-500 hover:text-navy p-1.5 cursor-pointer sm:hidden"
+                            as="button">
+                            <i class="pi pi-sign-out text-sm sm:text-xl"></i>
+                        </Link>
+                    </template>
                 </div>
             </div>
         </nav>
@@ -183,11 +257,11 @@ function navItemClass(href: string): string {
         <div class="bg-navy">
             <div
                 class="max-w-7xl mx-auto flex items-center min-w-full gap-1 justify-between overflow-x-auto hide-scrollbar">
-                <Link v-for="link in navLinks" :key="link.label"
+                <a v-for="link in navLinks" :key="link.label"
                     :class="['text-white no-underline py-2 px-4 text-sm font-bold whitespace-nowrap block mx-auto hover:bg-lemon/18 hover:text-white cursor-pointer', navItemClass(link.href)]"
-                    :href="link.href" @click="mobileOpen = false" as="a">
+                    :href="link.href">
                     <i v-if="link.icon" :class="[link.icon, 'mr-1']"></i> {{ link.label }}
-                </Link>
+                </a>
             </div>
         </div>
         <div class="absolute bottom-0 h-px w-full bg-linear-to-r from-transparent via-primary/20 to-transparent" />

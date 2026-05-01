@@ -21,7 +21,8 @@
         'Segoe UI Emoji';
     --font-condensed: 'Barlow Condensed', sans-serif;
 
-    --color-primary: #10b981;
+    /* --color-primary: #10b981; */
+    --color-primary: #0d1b2a;
     --color-primary-container: #a7f3d0;
     --color-primary-fixed: #d1fae5;
     --color-primary-fixed-dim: #6ee7b7;
@@ -30,7 +31,8 @@
     --color-on-primary-fixed: #022c22;
     --color-on-primary-fixed-variant: #065f46;
 
-    --color-secondary: #3c474b;
+    /* --color-secondary: #3c474b; */
+    --color-secondary: #c8e000;
     --color-secondary-container: #d8ebe9;
     --color-secondary-fixed: #d8ebe9;
     --color-secondary-fixed-dim: #b8d5d0;
@@ -89,6 +91,12 @@
     --color-muted-green: #3a4a30;
     --color-ink: #0a0a0a;
     --color-sage-tint: #f0f5e8;
+    --color-sage-border: #dde8cc;
+    --color-sage-light: #eef5e0;
+    --color-sage-mid: #e8f0d8;
+    --color-sage-dark: #5a7a4a;
+    --color-sage-bg: #f4f7f0;
+    --color-sage-border-dark: #c5d9b0;
 
     /* Hero section typography */
 

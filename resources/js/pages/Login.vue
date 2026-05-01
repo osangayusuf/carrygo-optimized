@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
-import { home as homeShow } from '@/routes';
 import { store as loginStore } from '@/routes/login';
 </script>
 
@@ -17,10 +16,10 @@ import { store as loginStore } from '@/routes/login';
         <div class="relative z-10 w-full max-w-md">
             <div
                 class="rounded-xl border border-outline-variant/15 bg-surface-container-lowest px-8 py-10 shadow-[0_20px_40px_rgba(0,104,118,0.06)]">
-                <h1 class="mb-2 text-center font-headline text-3xl font-extrabold tracking-tight text-on-surface">
+                <h1 class="mb-2 text-center font-headline text-3xl font-extrabold tracking-tight text-primary">
                     Welcome back
                 </h1>
-                <p class="mb-8 text-center text-sm text-on-surface-variant">
+                <p class="mb-8 text-center text-sm text-secondary">
                     Enter your MSISDN to continue
                 </p>
 
@@ -49,9 +48,9 @@ import { store as loginStore } from '@/routes/login';
                         Login successful. Redirecting...
                     </p>
 
-                    <div class="mt-4 text-center text-xs text-outline-variant">
+                    <div class="mt-4 text-center text-xs text-primary">
                         Not subscribed yet?
-                        <a :href="homeShow.url()" class="font-medium text-primary underline-offset-2 hover:underline">
+                        <a href="tel:*20790#" class="font-medium text-secondary underline-offset-2 hover:underline">
                             Dial *20790# to subscribe
                         </a>
                     </div>

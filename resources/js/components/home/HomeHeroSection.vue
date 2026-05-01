@@ -26,7 +26,7 @@ useIntervalFn(() => {
         style="grid-template-columns: 1fr 4fr;">
         <!-- LEFT CATEGORIES NAV -->
         <div class="bg-white rounded-xl overflow-hidden border border-outline-variant flex-col hidden md:flex">
-            <Link v-for="cat in categories" :key="cat" :href="trending.url({ category: cat })"
+            <Link v-for="cat in categories" :key="cat" :href="trending.url() + '?category=' + cat"
                 class="flex items-center gap-2.5 px-3.5 text-sm font-bold text-ink no-underline border-b border-sage-tint transition-all duration-150 flex-1 whitespace-nowrap last:border-b-0 hover:bg-sage-tint hover:text-primary hover:pl-4.5">
                 <span v-if="props.getCategoryIcon(cat)" class="material-symbols-outlined mr-1 text-sm">
                     {{ getCategoryIcon(cat) }}
@@ -80,9 +80,21 @@ useIntervalFn(() => {
                         :style="{ transform: `translateX(-${currentBannerIndex * 100}%)` }">
                         <div v-for="(img, index) in bannerImages" :key="index"
                             class="min-w-full flex flex-col items-center justify-center">
-                            <img :src="img" alt="Banner"
+                            <img :src="`${$page.props.asset_url}${img}`" alt="Banner"
                                 class="w-full h-auto object-contain animate-float-img rounded-md px-7">
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="overflow-hidden w-full select-none hidden max-md:flex my-5">
+            <div class="w-full h-full relative overflow-hidden flex items-center justify-center" id="heroCarousel">
+                <div class="flex w-full h-full items-center transition-transform duration-500 ease-in-out"
+                    :style="{ transform: `translateX(-${currentBannerIndex * 100}%)` }">
+                    <div v-for="(img, index) in bannerImages" :key="index"
+                        class="min-w-full flex flex-col items-center justify-center">
+                        <img :src="`${$page.props.asset_url}${img}`" alt="Banner"
+                            class="w-full h-auto object-contain animate-float-img rounded-md px-7">
                     </div>
                 </div>
             </div>

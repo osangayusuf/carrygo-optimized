@@ -9,6 +9,6 @@ import AppNavbar from '@/components/layout/AppNavbar.vue';
         <main class="flex-1">
             <slot />
         </main>
-        <!-- <AppFooter /> -->
+        <AppFooter />
     </div>
 </template>
