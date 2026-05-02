@@ -15,9 +15,26 @@ const bannerImages = [
 ];
 const currentBannerIndex = ref(0);
 
-useIntervalFn(() => {
+const { pause } = useIntervalFn(() => {
     currentBannerIndex.value = (currentBannerIndex.value + 1) % bannerImages.length;
 }, 3000);
+
+const stopAutoSlide = () => pause();
+
+const goToSlide = (index: number) => {
+    stopAutoSlide();
+    currentBannerIndex.value = index;
+};
+
+const nextSlide = () => {
+    stopAutoSlide();
+    currentBannerIndex.value = (currentBannerIndex.value + 1) % bannerImages.length;
+};
+
+const prevSlide = () => {
+    stopAutoSlide();
+    currentBannerIndex.value = (currentBannerIndex.value - 1 + bannerImages.length) % bannerImages.length;
+};
 </script>
 
 <template>
@@ -74,7 +91,7 @@ useIntervalFn(() => {
                 </div>
             </div>
 
-            <div class="shrink-0 relative overflow-hidden hero-banner-right-bg w-1/2 select-none hidden md:flex">
+            <div class="shrink-0 relative overflow-hidden hero-banner-right-bg w-1/2 select-none hidden md:flex group">
                 <div class="w-full h-full relative overflow-hidden flex items-center justify-center" id="heroCarousel">
                     <div class="flex w-full h-full items-center transition-transform duration-500 ease-in-out"
                         :style="{ transform: `translateX(-${currentBannerIndex * 100}%)` }">
@@ -84,10 +101,26 @@ useIntervalFn(() => {
                                 class="w-full h-auto object-contain animate-float-img rounded-md px-7">
                         </div>
                     </div>
+
+                    <!-- Navigation Arrows -->
+                    <button @click="prevSlide" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 text-white flex items-center justify-center hover:bg-black/50 transition-colors z-10 cursor-pointer border-none opacity-0 group-hover:opacity-100">
+                        <i class="pi pi-chevron-left text-sm"></i>
+                    </button>
+                    <button @click="nextSlide" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 text-white flex items-center justify-center hover:bg-black/50 transition-colors z-10 cursor-pointer border-none opacity-0 group-hover:opacity-100">
+                        <i class="pi pi-chevron-right text-sm"></i>
+                    </button>
+
+                    <!-- Dots -->
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10 drop-shadow-md">
+                        <button v-for="(_, index) in bannerImages" :key="`dot-${index}`" @click="goToSlide(index)"
+                            class="rounded-full transition-all duration-300 border-none cursor-pointer p-0"
+                            :class="currentBannerIndex === index ? 'bg-lemon w-6 h-2' : 'bg-white/50 hover:bg-white/80 w-2 h-2'">
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="overflow-hidden w-full select-none hidden max-md:flex my-5">
+        <div class="overflow-hidden w-full select-none hidden max-md:flex my-5 relative group">
             <div class="w-full h-full relative overflow-hidden flex items-center justify-center" id="heroCarousel">
                 <div class="flex w-full h-full items-center transition-transform duration-500 ease-in-out"
                     :style="{ transform: `translateX(-${currentBannerIndex * 100}%)` }">
@@ -96,6 +129,22 @@ useIntervalFn(() => {
                         <img :src="`${$page.props.asset_url}${img}`" alt="Banner"
                             class="w-full h-auto object-contain animate-float-img rounded-md px-7">
                     </div>
+                </div>
+
+                <!-- Navigation Arrows -->
+                <button @click="prevSlide" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 text-white flex items-center justify-center hover:bg-black/50 transition-colors z-10 cursor-pointer border-none">
+                    <i class="pi pi-chevron-left text-sm"></i>
+                </button>
+                <button @click="nextSlide" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 text-white flex items-center justify-center hover:bg-black/50 transition-colors z-10 cursor-pointer border-none">
+                    <i class="pi pi-chevron-right text-sm"></i>
+                </button>
+
+                <!-- Dots -->
+                <div class="absolute bottom-0 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
+                    <button v-for="(_, index) in bannerImages" :key="`dot-${index}`" @click="goToSlide(index)"
+                        class="rounded-full transition-all duration-300 border-none cursor-pointer p-0"
+                        :class="currentBannerIndex === index ? 'bg-ink w-6 h-2' : 'bg-ink/30 hover:bg-ink/50 w-2 h-2'">
+                    </button>
                 </div>
             </div>
         </div>
