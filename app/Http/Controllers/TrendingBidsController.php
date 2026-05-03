@@ -18,12 +18,6 @@ class TrendingBidsController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        $statuses = match ($request->status) {
-            'live' => [BidStatus::Live],
-            'upcoming' => [BidStatus::Upcoming],
-            default => [BidStatus::Upcoming, BidStatus::Live],
-        };
-
         $categories = Bid::query()
             ->whereNotNull('category')
             ->where('category', '!=', '')
@@ -34,18 +28,18 @@ class TrendingBidsController extends Controller
 
         $bids = Bid::query()
             ->with('bidActive')
-            ->whereIn('status', $statuses)
+            ->where('status', BidStatus::Live)
             ->withSum('bidEntries as bid_entry_points', 'points')
             ->withSum('bidActives as bid_active_points', 'points')
-            ->when($request->search, fn($q, $s) => $q->where(
-                fn($q) => $q->where('name', 'like', "%{$s}%")
+            ->when($request->search, fn ($q, $s) => $q->where(
+                fn ($q) => $q->where('name', 'like', "%{$s}%")
                     ->orWhere('price', 'like', "%{$s}%")
             ))
-            ->when($request->category, fn($q, $category) => $q->where('category', $category))
+            ->when($request->category, fn ($q, $category) => $q->where('category', $category))
             ->when(
                 $request->sort === 'value_desc',
-                fn($q) => $q->orderByDesc('price'),
-                fn($q) => $q->orderByDesc(
+                fn ($q) => $q->orderByDesc('price'),
+                fn ($q) => $q->orderByDesc(
                     BidEntry::select('created_at')
                         ->whereColumn('bidid', 'carrygo_bid.id')
                         ->latest()

@@ -31,9 +31,8 @@ class HomeController extends Controller
                     ->orWhere('price', 'like', "%{$search}%");
             });
         })
-        ->whereIn('status', [BidStatus::Upcoming, BidStatus::Live])
-        ->orderBy('id', 'desc');
-
+            ->where('status', BidStatus::Live);
+            
         $bids = (clone $baseQ)
             ->with(['bidActive'])
             ->withSum('bidEntries as bid_entry_points', 'points')
@@ -66,6 +65,24 @@ class HomeController extends Controller
                 ->where('bidid', $popupConfig['bid_id'])
                 ->orderByDesc('id')
                 ->first(['id', 'msisdn', 'total_points', 'bidid', 'created_at']);
+        }
+
+        /** @var array{enabled: bool, bid_id: int|null} $eventConfig */
+        $eventConfig = config('promotions.event_popup');
+        $eventPopupBid = null;
+
+        if ($eventConfig['enabled'] && $eventConfig['bid_id']) {
+            $eventPopupBid = Bid::query()
+                ->with('bidActive')
+                ->where('id', $eventConfig['bid_id'])
+                ->where('status', BidStatus::Live)
+                ->first(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at']);
+
+            if ($eventPopupBid) {
+                $eventPopupBid->ends_at = in_array($eventPopupBid->status, [BidStatus::Live], true)
+                    ? $eventPopupBid->bidActive?->created_at?->copy()->addHours((int) $eventPopupBid->open_date)?->toISOString()
+                    : null;
+            }
         }
 
         /** @var User|null $authUser */
@@ -162,6 +179,7 @@ class HomeController extends Controller
             'userPoints' => $userPoints,
             'reviews' => $reviews,
             'winnerPopup' => $winnerPopup,
+            'eventPopupBid' => $eventPopupBid,
         ]);
     }
 }

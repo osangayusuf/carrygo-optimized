@@ -19,6 +19,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Event Popup
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, the homepage will show a promotional popup for a specific
+    | event bid. Users can bid directly from this popup.
+    | Set EVENT_POPUP_BID_ID to null (or omit the env var) to disable.
+    |
+    */
+    'event_popup' => [
+        'enabled' => env('EVENT_POPUP_ENABLED', true),
+        'bid_id' => env('EVENT_POPUP_BID_ID', 799),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Notifications
     |--------------------------------------------------------------------------
     |

@@ -43,7 +43,7 @@ const prevSlide = () => {
         style="grid-template-columns: 1fr 4fr;">
         <!-- LEFT CATEGORIES NAV -->
         <div class="bg-white rounded-xl overflow-hidden border border-outline-variant flex-col hidden md:flex">
-            <Link v-for="cat in categories" :key="cat" :href="trending.url() + '?category=' + cat"
+            <Link v-for="cat in categories" :key="cat" :href="trending.url() + '?category=' + encodeURIComponent(cat)"
                 class="flex items-center gap-2.5 px-3.5 text-sm font-bold text-ink no-underline border-b border-sage-tint transition-all duration-150 flex-1 whitespace-nowrap last:border-b-0 hover:bg-sage-tint hover:text-primary hover:pl-4.5">
                 <span v-if="props.getCategoryIcon(cat)" class="material-symbols-outlined mr-1 text-sm">
                     {{ getCategoryIcon(cat) }}

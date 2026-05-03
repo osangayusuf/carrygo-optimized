@@ -18,12 +18,10 @@ const expandedImage = ref<string | null>(null);
                 <span class="material-symbols-outlined text-[16px]">open_in_new</span>
             </a>
             <div class="absolute bottom-2 left-2">
-                <span v-if="bid.status === 1" class="rounded-lg bg-navy px-2 py-1 text-[9px] font-black tracking-widest text-lemon uppercase shadow-lg sm:px-3 sm:text-[10px]">
+                <span v-if="bid.status === 0" class="rounded-lg bg-navy px-2 py-1 text-[9px] font-black tracking-widest text-lemon uppercase shadow-lg sm:px-3 sm:text-[10px]">
                     Live
                 </span>
-                <span v-else class="rounded-lg bg-navy px-2 py-1 text-[9px] font-black tracking-widest text-lemon uppercase shadow-lg sm:px-3 sm:text-[10px]">
-                    Upcoming
-                </span>
+
             </div>
         </div>
 

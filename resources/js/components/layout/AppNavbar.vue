@@ -8,6 +8,7 @@ import {
     events,
     history,
     home,
+    howToPlay,
     leaderboard,
     login as loginShow,
     logout as logoutRoute,
@@ -101,10 +102,15 @@ const navLinks = [
     { label: 'Trending', href: trending.url(), icon: 'pi pi-chart-line' },
     { label: 'Open Bids', href: openBids.url(), icon: 'pi pi-box' },
     { label: 'Event Items', href: events.url(), icon: 'pi pi-calendar' },
-    { label: 'History', href: history.url(), icon: 'pi pi-history' },
+    { label: 'Winners', href: history.url(), icon: 'pi pi-history' },
     { label: 'Leaderboard', href: leaderboard.url(), icon: 'pi pi-chart-bar' },
     { label: 'Tasks', href: tasks.url(), icon: 'pi pi-check-square' },
+    { label: 'How to play', href: howToPlay.url(), icon: 'pi pi-question-circle' },
 ];
+
+const isNavExpanded = ref(false);
+const firstLineLinks = computed(() => navLinks.slice(0, 4));
+const secondLineLinks = computed(() => navLinks.slice(4));
 
 const currentUser = computed(() => (page.props.auth?.user as any) ?? null);
 
@@ -131,7 +137,7 @@ function navItemClass(href: string): string {
             ? page.url === home.url() || page.url === ''
             : page.url.startsWith(path));
     const base =
-        'font-headline px-1 py-0.5 text-sm tracking-tight transition-colors';
+        'font-headline px-1 py-0.5 tracking-tight transition-colors';
 
     if (active) {
         return `${base} border-b-2 border-primary font-extrabold text-primary`;
@@ -254,14 +260,36 @@ function navItemClass(href: string): string {
         </nav>
 
         <!-- SUB NAV -->
-        <div class="bg-navy">
-            <div
-                class="max-w-7xl mx-auto flex items-center min-w-full gap-1 justify-between overflow-x-auto hide-scrollbar">
+        <div class="bg-navy relative">
+            <!-- Desktop View -->
+            <div class="hidden md:flex max-w-7xl mx-auto items-center min-w-full gap-1 justify-between overflow-x-auto hide-scrollbar">
                 <a v-for="link in navLinks" :key="link.label"
-                    :class="['text-white no-underline py-2 px-4 text-sm font-bold whitespace-nowrap block mx-auto hover:bg-lemon/18 hover:text-white cursor-pointer', navItemClass(link.href)]"
+                    :class="['text-white no-underline py-2 px-4 text-sm whitespace-nowrap block mx-auto hover:bg-lemon/18 hover:text-white cursor-pointer', navItemClass(link.href)]"
                     :href="link.href">
                     <i v-if="link.icon" :class="[link.icon, 'mr-1']"></i> {{ link.label }}
                 </a>
+            </div>
+
+            <!-- Mobile View -->
+            <div class="md:hidden w-full flex flex-col">
+                <div class="flex items-center w-full justify-between px-1">
+                    <button @click="isNavExpanded = !isNavExpanded"
+                        class="text-white bg-transparent border-none py-2 px-1 sm:px-2 text-[11px] sm:text-xs font-bold whitespace-nowrap cursor-pointer hover:bg-lemon/18 flex items-center gap-0.5 shrink-0 transition-colors">
+                        <i class="pi pi-th-large text-[10px]"></i> View All
+                    </button>
+                    <a v-for="link in firstLineLinks" :key="link.label"
+                        :class="['text-white no-underline py-2 px-1 text-[11px] sm:text-xs whitespace-nowrap text-center flex-1 hover:bg-lemon/18 hover:text-white cursor-pointer', navItemClass(link.href)]"
+                        :href="link.href">
+                        {{ link.label }}
+                    </a>
+                </div>
+                <div v-show="isNavExpanded" class="flex items-center w-full justify-between px-1 bg-navy/90 border-t border-white/10">
+                    <a v-for="link in secondLineLinks" :key="link.label"
+                        :class="['text-white no-underline py-2 px-1 text-[11px] sm:text-xs whitespace-nowrap text-center flex-1 hover:bg-lemon/18 hover:text-white cursor-pointer', navItemClass(link.href)]"
+                        :href="link.href">
+                        {{ link.label }}
+                    </a>
+                </div>
             </div>
         </div>
         <div class="absolute bottom-0 h-px w-full bg-linear-to-r from-transparent via-primary/20 to-transparent" />

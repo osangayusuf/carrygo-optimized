@@ -116,8 +116,6 @@ class BidController extends Controller
                         'points' => $carrygo_bid_entry_sum,
                         'status' => 0,
                     ]);
-
-                    $bid->update(['status' => BidStatus::Live]);
                 }
             }
         });

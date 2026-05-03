@@ -65,3 +65,17 @@ export function formatMsisdn(msisdn: string): string {
 
     return msisdn.slice(0, start) + '*****' + msisdn.slice(start + 5);
 }
+
+export function getDaysAgo(dateStr: string): string {
+    const date = new Date(dateStr);
+    const diffInMs = now.value.getTime() - date.getTime();
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    if (diffInDays === 0) {
+        return 'Today';
+    } else if (diffInDays === 1) {
+        return '1 day ago';
+    } else {
+        return `${diffInDays} days ago`;
+    }
+}

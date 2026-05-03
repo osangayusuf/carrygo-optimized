@@ -3,9 +3,10 @@ import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import BidCard from '@/components/cards/BidCard.vue';
 import HomeBidItemsSection from '@/components/home/HomeBidItemsSection.vue';
+import HomeEventPopup from '@/components/home/HomeEventPopup.vue';
 import HomeHeroSection from '@/components/home/HomeHeroSection.vue';
 import HomeWinnerPopup from '@/components/home/HomeWinnerPopup.vue';
-import { formatPrice, formatMsisdn } from '@/lib/utils';
+import { formatPrice, formatMsisdn, getDaysAgo } from '@/lib/utils';
 import { trending, openBids as openBidsRoute } from '@/routes';
 
 export type Bidder = {
@@ -65,6 +66,7 @@ const props = defineProps<{
     userPoints: number | null;
     reviews: Review[];
     winnerPopup: Winner | null;
+    eventPopupBid: Bid | null;
 }>();
 
 const bidItemsSectionRef = ref<InstanceType<typeof HomeBidItemsSection> | null>(null);
@@ -96,6 +98,7 @@ const getCategoryIcon = (category: string): string => {
 
     <Head title="Home" />
     <HomeWinnerPopup v-if="props.winnerPopup" :winner="props.winnerPopup" />
+    <HomeEventPopup v-if="props.eventPopupBid" :bid="props.eventPopupBid" @open-bid-modal="openBidModal" />
 
     <!-- Hidden section to retain the bid modal logic -->
     <HomeBidItemsSection ref="bidItemsSectionRef" :bids="[]" :categories="[]" :userPoints="props.userPoints"
@@ -133,7 +136,7 @@ const getCategoryIcon = (category: string): string => {
                 <Link :href="trending.url()" class="text-forest text-sm font-bold hover:underline">View All →</Link>
             </div>
             <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
-                <Link :href="trending.url() + '?category=' + cat"
+                <Link :href="trending.url() + '?category=' + encodeURIComponent(cat)"
                     class="group bg-white rounded-lg p-3.5 px-2 text-center cursor-pointer border-2 border-transparent transition-all duration-200 shadow-sm hover:border-lemon hover:bg-navy hover:-translate-y-0.5"
                     v-for="cat in props.categories" :key="cat" style="text-decoration:none;">
                     <div class="text-3xl mb-1.5"><span class="material-symbols-outlined">{{ getCategoryIcon(cat)
@@ -240,7 +243,7 @@ const getCategoryIcon = (category: string): string => {
                         <span class="inline-block w-1 h-[22px] bg-forest rounded-sm mr-2 align-middle"></span>
                         <span class="material-symbols-outlined text-[22px] text-forest mr-1.5 leading-none">{{ getCategoryIcon(String(categoryName)) }}</span> {{ categoryName }}
                     </div>
-                    <Link :href="trending.url() + '?category=' + categoryName" class="text-forest text-sm font-bold hover:underline">View All →
+                    <Link :href="trending.url() + '?category=' + encodeURIComponent(String(categoryName))" class="text-forest text-sm font-bold hover:underline">View All →
                     </Link>
                 </div>
                 <div class="max-w-[1300px] mx-auto grid gap-2.5 grid-cols-2 md:grid-cols-5">
@@ -266,8 +269,11 @@ const getCategoryIcon = (category: string): string => {
                         <span v-else class="pi pi-image text-4xl text-gray-300"></span>
                     </div>
                     <div class="font-bold text-sm text-ink mb-1 line-clamp-1" :title="winner.bid?.name || 'Luxury Item'">{{ winner.bid?.name || 'Luxury Item' }}</div>
-                    <div class="text-xs text-muted-green mb-3 flex items-center gap-1.5">
-                        <span class="pi pi-user text-[10px]"></span> {{ formatMsisdn(winner.msisdn) }}
+                    <div class="text-xs text-muted-green mb-3 flex items-center justify-between">
+                        <div class="flex items-center gap-1.5">
+                            <span class="pi pi-user text-[10px]"></span> {{ formatMsisdn(winner.msisdn) }}
+                        </div>
+                        <div class="text-[10px]">{{ getDaysAgo(winner.created_at) }}</div>
                     </div>
                     <div class="mt-auto bg-sage-bg border border-sage-border rounded py-1.5 px-2 text-xs font-extrabold text-forest">
                         Won with {{ winner.total_points }} pts

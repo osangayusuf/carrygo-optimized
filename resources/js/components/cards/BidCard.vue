@@ -31,17 +31,13 @@ function buttonLabel(bid: Bid): string {
         <div class="h-36 relative overflow-hidden bg-sage-light cursor-pointer" @click="expandedImage = bid.image">
             <img :src="bid.image" :alt="bid.name" class="w-full h-full object-cover block transition-transform duration-700 hover:scale-110">
             <div class="absolute top-2 right-2">
-                <span v-if="bid.status === 1"
+                <span v-if="bid.status === 0"
                     class="rounded-lg bg-navy px-2 py-1 text-[9px] font-black tracking-widest text-lemon uppercase shadow-lg sm:px-3 sm:text-[10px]">
                     Live
                 </span>
                 <span v-else-if="bid.status === 2"
                     class="rounded-lg bg-error px-2 py-1 text-[9px] font-black tracking-widest text-white uppercase shadow-lg sm:px-3 sm:text-[10px]">
                     Closed
-                </span>
-                <span v-else
-                    class="rounded-lg bg-navy px-2 py-1 text-[9px] font-black tracking-widest text-lemon uppercase shadow-lg sm:px-3 sm:text-[10px]">
-                    Upcoming
                 </span>
             </div>
         </div>
@@ -82,7 +78,7 @@ function buttonLabel(bid: Bid): string {
     <!-- Image Overlay -->
     <Teleport to="body">
         <div v-if="expandedImage"
-            class="fixed inset-0 z-[100] flex cursor-pointer items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+            class="fixed inset-0 z-100 flex cursor-pointer items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
             @click="expandedImage = null">
             <img :src="expandedImage" class="max-h-full max-w-full rounded-2xl object-contain shadow-2xl"
                 alt="Expanded image" />

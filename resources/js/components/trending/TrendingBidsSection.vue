@@ -33,14 +33,6 @@ const sortLabel = computed(
 const activeFilters = computed(() => {
     const chips: { key: string; label: string }[] = [];
 
-    if (status.value === 'live') {
-        chips.push({ key: 'status', label: 'Status: Live' });
-    }
-
-    if (status.value === 'upcoming') {
-        chips.push({ key: 'status', label: 'Status: Upcoming' });
-    }
-
     if (category.value) {
         chips.push({ key: 'category', label: `Category: ${category.value}` });
     }
@@ -68,11 +60,6 @@ function visit(extra: Record<string, string | number> = {}) {
 
 
 function onSortChange() {
-    visit({ page: 1 });
-}
-
-function setStatus(value: string) {
-    status.value = value;
     visit({ page: 1 });
 }
 
@@ -157,7 +144,7 @@ function submitBid() {
                     </h1>
                 </div>
 
-                <div class="flex w-full flex-col gap-4 sm:flex-row md:w-auto">                  
+                <div class="flex w-full flex-col gap-4 sm:flex-row md:w-auto">
                     <div class="relative">
                         <div
                             class="flex cursor-pointer items-center justify-between rounded-full bg-surface-container-low px-6 py-3.5 transition-colors hover:bg-surface-container-high">
@@ -191,30 +178,6 @@ function submitBid() {
                         <div v-if="showFilters"
                             class="absolute top-full right-0 z-20 mt-2 w-64 overflow-hidden rounded-2xl border border-surface-container bg-surface-container-lowest shadow-xl shadow-primary/10">
                             <div class="p-3">
-                                <p class="mb-2 px-2 text-[10px] font-black tracking-widest text-outline uppercase">
-                                    Status
-                                </p>
-                                <button v-for="opt in [
-                                    { value: '', label: 'All' },
-                                    { value: 'live', label: 'Live' },
-                                    {
-                                        value: 'upcoming',
-                                        label: 'Upcoming',
-                                    },
-                                ]" :key="opt.value" type="button"
-                                    class="mb-1 flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition-colors"
-                                    :class="status === opt.value
-                                        ? 'bg-primary text-on-primary'
-                                        : 'text-on-surface-variant hover:bg-surface-container-low'
-                                        " @click="setStatus(opt.value)">
-                                    <span class="material-symbols-outlined text-base">{{
-                                        status === opt.value
-                                            ? 'radio_button_checked'
-                                            : 'radio_button_unchecked'
-                                    }}</span>
-                                    {{ opt.label }}
-                                </button>
-
                                 <p class="mt-3 mb-2 px-2 text-[10px] font-black tracking-widest text-outline uppercase">
                                     Category
                                 </p>
@@ -284,11 +247,7 @@ function submitBid() {
         </div>
 
         <!-- Pagination -->
-        <AppPaginator
-            :current-page="bids.current_page"
-            :last-page="bids.last_page"
-            @page-change="goToPage"
-        />
+        <AppPaginator :current-page="bids.current_page" :last-page="bids.last_page" @page-change="goToPage" />
 
         <!-- Teleport Modal to body -->
         <Teleport to="body">
@@ -313,7 +272,7 @@ function submitBid() {
                         Bid on
                         <span class="font-bold text-on-surface">{{
                             selectedBid.name
-                            }}</span>
+                        }}</span>
                     </p>
 
                     <form @submit.prevent="submitBid">
@@ -341,7 +300,7 @@ function submitBid() {
                             <div v-if="selectedBid.status === 1" class="flex items-center justify-between">
                                 <span class="text-sm font-semibold text-on-surface-variant">Total Bidded Points</span>
                                 <span class="text-sm font-black text-on-surface">{{ selectedBid.bid_entry_points
-                                    }}</span>
+                                }}</span>
                             </div>
                         </div>
 
@@ -365,7 +324,7 @@ function submitBid() {
                 </div>
                 <span class="text-sm font-bold text-on-surface">{{
                     toastMessage
-                    }}</span>
+                }}</span>
             </div>
         </Teleport>
     </section>
