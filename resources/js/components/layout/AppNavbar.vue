@@ -108,7 +108,6 @@ const navLinks = [
     { label: 'How to play', href: howToPlay.url(), icon: 'pi pi-question-circle' },
 ];
 
-const isNavExpanded = ref(false);
 const firstLineLinks = computed(() => navLinks.slice(0, 4));
 const secondLineLinks = computed(() => navLinks.slice(4));
 
@@ -273,17 +272,13 @@ function navItemClass(href: string): string {
             <!-- Mobile View -->
             <div class="md:hidden w-full flex flex-col">
                 <div class="flex items-center w-full justify-between px-1">
-                    <button @click="isNavExpanded = !isNavExpanded"
-                        class="text-white bg-transparent border-none py-2 px-1 sm:px-2 text-[11px] sm:text-xs font-bold whitespace-nowrap cursor-pointer hover:bg-lemon/18 flex items-center gap-0.5 shrink-0 transition-colors">
-                        <i class="pi pi-th-large text-[10px]"></i> View All
-                    </button>
                     <a v-for="link in firstLineLinks" :key="link.label"
                         :class="['text-white no-underline py-2 px-1 text-[11px] sm:text-xs whitespace-nowrap text-center flex-1 hover:bg-lemon/18 hover:text-white cursor-pointer', navItemClass(link.href)]"
                         :href="link.href">
                         {{ link.label }}
                     </a>
                 </div>
-                <div v-show="isNavExpanded" class="flex items-center w-full justify-between px-1 bg-navy/90 border-t border-white/10">
+                <div class="flex items-center w-full justify-between px-1 bg-navy/90 border-t border-white/10">
                     <a v-for="link in secondLineLinks" :key="link.label"
                         :class="['text-white no-underline py-2 px-1 text-[11px] sm:text-xs whitespace-nowrap text-center flex-1 hover:bg-lemon/18 hover:text-white cursor-pointer', navItemClass(link.href)]"
                         :href="link.href">

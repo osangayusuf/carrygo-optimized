@@ -62,7 +62,7 @@ function bidNow(): void {
                 </div>
 
                 <!-- Right — text content -->
-                <div class="flex min-h-[420px] flex-1 flex-col justify-center px-10 py-12">
+                <div class="flex md:min-h-[420px] flex-1 flex-col justify-center px-10 py-12">
                     <!-- Icon -->
                     <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-lemon/15">
                         <span class="material-symbols-outlined text-3xl text-forest" data-weight="fill">stars</span>
@@ -70,12 +70,12 @@ function bidNow(): void {
 
                     <!-- Heading -->
                     <h2 id="event-popup-title"
-                        class="mb-3 font-headline text-4xl font-extrabold tracking-tight text-forest drop-shadow-[0_2px_8px_rgba(250,204,21,0.4)]">
+                        class="mb-3 font-headline text-4xl font-extrabold max-md:text-2xl tracking-tight text-forest drop-shadow-[0_2px_8px_rgba(250,204,21,0.4)]">
                         Special Event!
                     </h2>
 
                     <!-- Subtitle -->
-                    <p class="mb-6 text-sm font-medium leading-relaxed text-on-surface/70">
+                    <p class="mb-6 max-md:mb-3 text-sm max-md:text-xs font-medium leading-relaxed text-on-surface/70">
                         Don't miss out on
                         <span class="font-bold text-on-surface">{{ props.bid.name }}</span>
                     </p>
@@ -84,7 +84,7 @@ function bidNow(): void {
                     <div class="mb-6 h-px w-full bg-surface-container" />
 
                     <!-- Ends at -->
-                    <p class="mb-4 text-base font-bold text-forest">
+                    <p class="mb-4 max-md:mb-2 text-base max-md:text-sm font-bold text-forest">
                         Closes in: {{ getRemainingTime(props.bid.ends_at) }}
                     </p>
 

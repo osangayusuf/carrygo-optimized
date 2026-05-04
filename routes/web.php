@@ -22,7 +22,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/open-bids', [OpenBidsController::class, 'index'])->name('open-bids');
 Route::get('/how-to-play', [HowToPlayController::class, 'index'])->name('how-to-play');
 Route::get('/terms', [TermsController::class, 'index'])->name('terms');
-Route::get('/login', [MsisdnLoginController::class, 'show'])
+Route::get('/login/{msisdn?}', [MsisdnLoginController::class, 'show'])
     ->name('login');
 
 Route::post('/login', [MsisdnLoginController::class, 'login'])
