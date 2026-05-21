@@ -14,9 +14,6 @@ const expandedImage = ref<string | null>(null);
         <!-- Image -->
         <div class="h-36 relative overflow-hidden bg-sage-light cursor-pointer" @click="expandedImage = bid.image">
             <img :src="bid.image" :alt="bid.name" class="w-full h-full object-cover block transition-transform duration-700 hover:scale-110" />
-            <a :href="bid.url" target="_blank" rel="noopener" class="absolute top-2 right-2 rounded-full bg-white/90 p-1.5 shadow-lg backdrop-blur transition-all hover:bg-primary hover:text-white" @click.stop>
-                <span class="material-symbols-outlined text-[16px]">open_in_new</span>
-            </a>
             <div class="absolute bottom-2 left-2">
                 <span v-if="bid.status === 0" class="rounded-lg bg-navy px-2 py-1 text-[9px] font-black tracking-widest text-lemon uppercase shadow-lg sm:px-3 sm:text-[10px]">
                     Live

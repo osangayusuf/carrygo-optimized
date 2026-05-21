@@ -63,7 +63,7 @@ const prevSlide = () => {
                     Win More.<span class="text-lemon block">Carry More.</span>
                 </h1>
                 <p class="text-sm text-white/65 mb-5.5 leading-relaxed">
-                    Bid on premium luxury items. Pay nothing if you lose.
+                    Bid on premium luxury items. Pay nothing if you win.
                 </p>
                 <div class="flex gap-2.5 mb-6">
                     <Link :href="trending.url()"

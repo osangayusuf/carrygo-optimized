@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserAnalytics;
 use App\Services\RewardsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -23,6 +24,12 @@ class SpinController extends Controller
         } catch (\RuntimeException $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
+
+        UserAnalytics::query()->create([
+            'msisdn' => $user->msisdn,
+            'action' => 'spin_wheel',
+            'activity_date' => now(),
+        ]);
 
         return response()->json([
             'points_won' => $result['points_won'],

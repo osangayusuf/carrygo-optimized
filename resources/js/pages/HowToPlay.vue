@@ -89,7 +89,7 @@ const sections = [
                     How to Play with
                     <span class="bg-linear-to-r from-primary to-primary-container bg-clip-text text-transparent">Bid Points</span>
                 </h1>
-                <p class="mx-auto max-w-2xl text-lg text-secondary">
+                <p class="mx-auto max-w-2xl text-lg text-primary">
                     Master the art of executive bidding. Follow our simple steps to start winning curated luxury items today.
                 </p>
             </div>
@@ -116,7 +116,7 @@ const sections = [
                             {{ index + 1 }}
                         </div>
                         <h3 class="font-headline mb-3 text-xl font-bold text-on-surface">{{ step.title }}</h3>
-                        <p class="text-secondary leading-relaxed font-body">
+                        <p class="text-primary leading-relaxed font-body">
                             {{ step.description }}
                         </p>
                     </div>
@@ -144,7 +144,7 @@ const sections = [
                         </div>
                         <div>
                             <h3 class="font-headline mb-2 text-lg font-bold text-on-surface">{{ section.title }}</h3>
-                            <p class="text-sm text-secondary leading-relaxed">
+                            <p class="text-sm text-primary leading-relaxed">
                                 {{ section.description }}
                             </p>
                         </div>
@@ -162,7 +162,7 @@ const sections = [
                     </div>
                     <div>
                         <h2 class="font-headline mb-2 text-2xl font-bold">Important Note</h2>
-                        <p class="text-lg opacity-90">
+                        <p class="text-lg">
                             Winners will be contacted officially through their registered phone number. Ensure your phone number is up to date to avoid any delays in claiming your prize.
                         </p>
                     </div>

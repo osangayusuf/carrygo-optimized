@@ -19,7 +19,7 @@ import { store as loginStore } from '@/routes/login';
                 <h1 class="mb-2 text-center font-headline text-3xl font-extrabold tracking-tight text-primary">
                     Welcome back
                 </h1>
-                <p class="mb-8 text-center text-sm text-secondary">
+                <p class="mb-8 text-center text-sm text-primary">
                     Enter your MSISDN to continue
                 </p>
 

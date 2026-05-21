@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { formatMsisdn, formatPrice } from '@/lib/utils';
+import { formatMsisdn, formatPrice, getDaysAgo } from '@/lib/utils';
 import type { WonBid } from '@/pages/HistoryBids.vue';
 
 defineProps<{ bid: WonBid }>();
@@ -17,9 +17,6 @@ const expandedImage = ref<string | null>(null);
         <!-- Image area -->
         <div class="h-36 relative overflow-hidden bg-sage-light cursor-pointer" @click="expandedImage = bid.image">
             <img :src="bid.image" :alt="bid.name" class="w-full h-full object-cover block transition-transform duration-700 hover:scale-110">
-            <a :href="bid.url" target="_blank" rel="noopener" class="absolute top-2 right-2 rounded-full bg-white/90 p-1.5 shadow-lg backdrop-blur transition-all hover:bg-primary hover:text-white" @click.stop>
-                <span class="material-symbols-outlined text-[16px]">open_in_new</span>
-            </a>
             <div class="absolute bottom-2 left-2 flex gap-2">
                 <span class="rounded-lg bg-navy px-2 py-1 text-[9px] font-black tracking-widest text-lemon uppercase shadow-lg sm:px-3 sm:text-[10px]">
                     Won Bid
@@ -45,10 +42,22 @@ const expandedImage = ref<string | null>(null);
                             {{ formatMsisdn(bid.bid_winner ? bid.bid_winner.msisdn : '') }}
                         </span>
                     </div>
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
                         <span class="text-[9px] font-bold text-sage-dark sm:text-[10px]">Winning Points:</span>
                         <span class="text-[10px] font-black text-forest sm:text-xs">
                             {{ bid.bid_winner ? bid.bid_winner.total_points : 'N/A' }}
+                        </span>
+                    </div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[9px] font-bold text-sage-dark sm:text-[10px]">Total Bidded Points:</span>
+                        <span class="text-[10px] font-black text-ink sm:text-xs">
+                            {{ bid.bid_entry_points ?? 0 }}
+                        </span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[9px] font-bold text-sage-dark sm:text-[10px]">Date Won:</span>
+                        <span class="text-[10px] font-black text-ink sm:text-xs">
+                            {{ bid.bid_winner?.created_at ? getDaysAgo(bid.bid_winner.created_at) : 'N/A' }}
                         </span>
                     </div>
                 </div>

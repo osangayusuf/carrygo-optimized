@@ -8,6 +8,7 @@ export interface WonBid extends Bid {
     bid_winner?: {
         msisdn: string;
         total_points: number;
+        created_at: string;
     } | null;
     reviews?: {
         id: number;

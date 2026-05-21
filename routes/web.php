@@ -22,11 +22,14 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/open-bids', [OpenBidsController::class, 'index'])->name('open-bids');
 Route::get('/how-to-play', [HowToPlayController::class, 'index'])->name('how-to-play');
 Route::get('/terms', [TermsController::class, 'index'])->name('terms');
-Route::get('/login/{msisdn?}', [MsisdnLoginController::class, 'show'])
-    ->name('login');
 
-Route::post('/login', [MsisdnLoginController::class, 'login'])
-    ->name('login.store');
+Route::middleware('guest')->group(function () {
+    Route::get('/login/{msisdn?}', [MsisdnLoginController::class, 'show'])
+        ->name('login');
+
+    Route::post('/login', [MsisdnLoginController::class, 'login'])
+        ->name('login.store');
+});
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [MsisdnLoginController::class, 'logout'])
