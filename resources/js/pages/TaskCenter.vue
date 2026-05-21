@@ -55,6 +55,13 @@ defineProps<{
         }>;
     };
     user_points: number;
+    referral: {
+        referee_points: number;
+        referrer_points: number;
+        referee_reward_label: string;
+        referrer_reward_label: string;
+        referrals_count: number;
+    };
 }>();
 
 // Toast system
@@ -148,7 +155,10 @@ function onSpun(pointsWon: number) {
                                 Invite &amp; Earn
                             </h2>
                             <p class="mt-1 text-sm text-on-surface-variant">
-                                Share your referral code and earn when friends join and bid
+                                Share your referral link and earn when friends join
+                                <span v-if="referral.referrals_count > 0" class="font-bold text-on-surface">
+                                    · {{ referral.referrals_count }} referred
+                                </span>
                             </p>
                         </div>
                         <Link
@@ -161,14 +171,14 @@ function onSpun(pointsWon: number) {
                     </div>
                     <div class="mt-4 flex flex-wrap gap-3">
                         <div class="flex items-center gap-2 rounded-xl bg-background px-4 py-2 text-sm">
-                            <span class="h-2 w-2 rounded-full bg-primary"></span>
-                            <span class="text-on-surface-variant">Friend registers:</span>
-                            <span class="font-bold text-on-surface">10 pts</span>
+                            <span class="h-2 w-2 rounded-full bg-primary-container"></span>
+                            <span class="text-on-surface-variant">{{ referral.referee_reward_label }}:</span>
+                            <span class="font-bold text-on-surface">{{ referral.referee_points }} pts</span>
                         </div>
                         <div class="flex items-center gap-2 rounded-xl bg-background px-4 py-2 text-sm">
-                            <span class="h-2 w-2 rounded-full bg-primary-container"></span>
-                            <span class="text-on-surface-variant">Friend buys points:</span>
-                            <span class="font-bold text-on-surface">20 pts</span>
+                            <span class="h-2 w-2 rounded-full bg-primary"></span>
+                            <span class="text-on-surface-variant">{{ referral.referrer_reward_label }}:</span>
+                            <span class="font-bold text-on-surface">{{ referral.referrer_points }} pts</span>
                         </div>
                     </div>
                 </div>

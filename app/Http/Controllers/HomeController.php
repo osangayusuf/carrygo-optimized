@@ -32,7 +32,7 @@ class HomeController extends Controller
             });
         })
             ->where('status', BidStatus::Live);
-            
+
         $bids = (clone $baseQ)
             ->with(['bidActive'])
             ->withSum('bidEntries as bid_entry_points', 'points')
@@ -119,6 +119,20 @@ class HomeController extends Controller
             return $bid;
         });
 
+        $recentlyAddedBids = (clone $baseQ)
+            ->with('bidActive')
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at']);
+
+        $recentlyAddedBids->transform(function (Bid $bid) {
+            $bid->ends_at = in_array($bid->status, [BidStatus::Live], true)
+                ? $bid->bidActive?->created_at?->copy()->addHours((int) $bid->open_date)?->toISOString()
+                : null;
+
+            return $bid;
+        });
+
         $openBids = (clone $baseQ)->with('bidActive')
             ->where('status', BidStatus::Live)
             ->has('bidActive')
@@ -169,7 +183,9 @@ class HomeController extends Controller
         });
 
         return Inertia::render('Home', [
+            'faqs' => config('faqs', []),
             'bids' => $bids,
+            'recentlyAddedBids' => $recentlyAddedBids,
             'trendingBids' => $trendingBids,
             'openBids' => $openBids,
             'luxuryBids' => $luxuryBids,

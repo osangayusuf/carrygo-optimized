@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Bid;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -53,13 +54,15 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $categories = Bid::query()
-            ->whereNotNull('category')
-            ->where('category', '!=', '')
-            ->distinct()
-            ->orderBy('category', 'asc')
-            ->pluck('category')
-            ->values();
+        $categories = Schema::hasTable('carrygo_bid')
+            ? Bid::query()
+                ->whereNotNull('category')
+                ->where('category', '!=', '')
+                ->distinct()
+                ->orderBy('category', 'asc')
+                ->pluck('category')
+                ->values()
+            : collect();
 
         return [
             ...parent::share($request),

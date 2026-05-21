@@ -18,7 +18,7 @@ class ProfileController extends Controller
                 'referral_code' => $user->referral_code,
                 'points' => $user->activePoint?->points ?? 0,
             ],
-            'referral_url' => route('home', ['ref' => $user->referral_code]),
+            'referral_url' => route('login', ['ref' => $user->referral_code]),
         ]);
     }
 }

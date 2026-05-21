@@ -5,6 +5,8 @@ import BidCard from '@/components/cards/BidCard.vue';
 import HomeBidItemsSection from '@/components/home/HomeBidItemsSection.vue';
 import HomeEventPopup from '@/components/home/HomeEventPopup.vue';
 import HomeHeroSection from '@/components/home/HomeHeroSection.vue';
+import HomeTaskCenterPopup from '@/components/home/HomeTaskCenterPopup.vue';
+import HomeFaqsSection from '@/components/home/HomeFaqsSection.vue';
 import HomeWinnerPopup from '@/components/home/HomeWinnerPopup.vue';
 import { formatPrice, formatMsisdn, getDaysAgo } from '@/lib/utils';
 import { trending, openBids as openBidsRoute } from '@/routes';
@@ -56,6 +58,7 @@ export type Review = {
 
 const props = defineProps<{
     heroBid: Bid | null;
+    recentlyAddedBids: Bid[];
     trendingBids: Bid[];
     openBids: Bid[];
     luxuryBids: Bid[];
@@ -67,6 +70,7 @@ const props = defineProps<{
     reviews: Review[];
     winnerPopup: Winner | null;
     eventPopupBid: Bid | null;
+    faqs: { question: string; answer: string }[];
 }>();
 
 const bidItemsSectionRef = ref<InstanceType<typeof HomeBidItemsSection> | null>(null);
@@ -157,6 +161,21 @@ const getCategoryIcon = (category: string): string => {
             </div>
             <div class="max-w-[1300px] mx-auto grid gap-2.5 grid-cols-2 md:grid-cols-5">
                 <BidCard v-for="bid in props.trendingBids.slice(0, 10)" :key="bid.id" :bid="bid"
+                    @open-bid-modal="openBidModal" />
+            </div>
+        </div>
+
+        <!-- RECENTLY ADDED -->
+        <div class="max-w-[1300px] mx-auto mb-5 px-4" v-if="props.recentlyAddedBids?.length > 0">
+            <div class="flex items-center justify-between mb-3.5">
+                <div class="font-condensed text-2xl font-extrabold text-ink flex items-center">
+                    <span class="inline-block w-1 h-[22px] bg-forest rounded-sm mr-2 align-middle"></span> <span
+                        class="pi pi-sparkles text-lg text-amber mr-1"></span> Recently Added
+                </div>
+                <Link :href="trending.url() + '?sort=recent'" class="text-forest text-sm font-bold hover:underline">View More →</Link>
+            </div>
+            <div class="max-w-[1300px] mx-auto grid gap-2.5 grid-cols-2 md:grid-cols-5">
+                <BidCard v-for="bid in props.recentlyAddedBids.slice(0, 10)" :key="bid.id" :bid="bid"
                     @open-bid-modal="openBidModal" />
             </div>
         </div>
@@ -317,6 +336,9 @@ const getCategoryIcon = (category: string): string => {
                 </div>
             </div>
         </div>
+
+        <!-- FAQS -->
+        <HomeFaqsSection :faqs="props.faqs" />
 
         <!-- TRUST BAR -->
         <div class="bg-navy border-y-2 border-lemon py-4.5 px-4 mb-5">

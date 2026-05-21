@@ -14,7 +14,7 @@ class AchievementService
      * Evaluate and grant achievements based on a trigger event.
      * All grants are idempotent — a completed achievement can never be granted twice.
      *
-     * @param  string  $event  One of: 'bid_placed', 'bid_won', 'points_deducted'
+     * @param  string  $event  One of: 'bid_placed', 'bid_won', 'points_deducted', 'referral_completed', 'referral_joined'
      * @param  array{bid_id?: int, category?: string, points_spent?: int}  $context
      * @return array<string> Keys of newly completed achievements
      */
@@ -26,6 +26,8 @@ class AchievementService
             'bid_placed' => $this->evaluateBidPlaced($user, $context, $newlyCompleted),
             'bid_won' => $this->evaluateBidWon($user, $newlyCompleted),
             'points_deducted' => $this->evaluatePointsDeducted($user, $context, $newlyCompleted),
+            'referral_completed' => $this->evaluateReferralCompleted($user, $newlyCompleted),
+            'referral_joined' => $this->evaluateReferralJoined($user, $newlyCompleted),
             default => null,
         };
 
@@ -101,6 +103,46 @@ class AchievementService
                 $this->grantAchievement($user, $achievement, 'big_spender', $newlyCompleted);
             }
         }
+    }
+
+    /**
+     * @param  array<string>  $newlyCompleted
+     */
+    private function evaluateReferralCompleted(User $user, array &$newlyCompleted): void
+    {
+        $config = config('rewards.achievements.refer_a_friend');
+        $target = (int) ($config['target'] ?? 1);
+
+        $referralCount = User::query()
+            ->where('referred_by_user_id', $user->id)
+            ->count();
+
+        $achievement = UserAchievement::firstOrCreate(
+            ['msisdn' => $user->msisdn, 'achievement_key' => 'refer_a_friend'],
+            ['progress' => 0, 'completed_at' => null]
+        );
+
+        if ($achievement->isCompleted()) {
+            return;
+        }
+
+        $achievement->update(['progress' => min($referralCount, $target)]);
+
+        if ($referralCount >= $target) {
+            $this->grantAchievement($user, $achievement, 'refer_a_friend', $newlyCompleted);
+        }
+    }
+
+    /**
+     * @param  array<string>  $newlyCompleted
+     */
+    private function evaluateReferralJoined(User $user, array &$newlyCompleted): void
+    {
+        if ($user->referred_by_user_id === null) {
+            return;
+        }
+
+        $this->incrementAndGrant($user, 'join_via_referral', 1, $newlyCompleted);
     }
 
     /**

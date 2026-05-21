@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ActivePoint;
 use App\Models\User;
 use App\Models\UserAnalytics;
+use App\Services\ReferralService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,8 +15,16 @@ use Inertia\Response;
 
 class MsisdnLoginController extends Controller
 {
+    public function __construct(private readonly ReferralService $referralService) {}
+
     public function show(Request $request, ?string $msisdn = null): Response|RedirectResponse
     {
+        $referralCode = $request->query('ref');
+
+        if (is_string($referralCode) && trim($referralCode) !== '') {
+            $request->session()->put('pending_referral_code', strtoupper(trim($referralCode)));
+        }
+
         $msisdnToLogin = $msisdn ?? $request->query('msisdn');
 
         if ($msisdnToLogin) {
@@ -73,7 +82,22 @@ class MsisdnLoginController extends Controller
 
         request()->session()->regenerate();
 
-        return redirect()->intended(route('home'));
+        $redirect = redirect()->intended(route('home'));
+
+        $pendingReferralCode = request()->session()->pull('pending_referral_code');
+
+        if (is_string($pendingReferralCode) && $pendingReferralCode !== '') {
+            $result = $this->referralService->processAfterLogin($user, $pendingReferralCode);
+
+            if ($result['processed']) {
+                $redirect->with(
+                    'success',
+                    'Welcome! Your referral bonus has been added to your rewards wallet.'
+                );
+            }
+        }
+
+        return $redirect;
     }
 
     public function logout(Request $request): RedirectResponse
