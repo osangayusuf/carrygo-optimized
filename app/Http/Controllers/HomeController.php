@@ -121,6 +121,8 @@ class HomeController extends Controller
 
         $recentlyAddedBids = (clone $baseQ)
             ->with('bidActive')
+            ->withSum('bidEntries as bid_entry_points', 'points')
+            ->withSum('bidActives as bid_active_points', 'points')
             ->orderByDesc('created_at')
             ->limit(10)
             ->get(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at']);
@@ -154,6 +156,8 @@ class HomeController extends Controller
         $categoryBids = [];
         foreach ($topCategories as $cat) {
             $catBids = (clone $baseQ)->with('bidActive')
+                ->withSum('bidEntries as bid_entry_points', 'points')
+                ->withSum('bidActives as bid_active_points', 'points')
                 ->where('category', $cat)
                 ->orderByDesc('id')
                 ->limit(10)
@@ -170,6 +174,8 @@ class HomeController extends Controller
         }
 
         $luxuryBids = (clone $baseQ)->with('bidActive')
+            ->withSum('bidEntries as bid_entry_points', 'points')
+            ->withSum('bidActives as bid_active_points', 'points')
             ->orderByRaw("CAST(REPLACE(price, ',', '') AS UNSIGNED) DESC")
             ->limit(10)
             ->get(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at']);

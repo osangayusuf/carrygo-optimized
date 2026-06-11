@@ -42,11 +42,14 @@ function maskedPhone(msisdn: string): string {
             @click.self="dismiss"
         >
             <!-- Backdrop -->
-            <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" @click="dismiss" />
+            <div
+                class="absolute inset-0 bg-black/75 backdrop-blur-sm"
+                @click="dismiss"
+            />
 
             <!-- Modal card — horizontal two-column layout -->
             <div
-                class="relative z-10 flex w-full max-w-2xl overflow-hidden rounded-3xl bg-surface-container-lowest shadow-2xl"
+                class="relative z-10 flex w-full max-w-2xl overflow-hidden rounded-3xl bg-surface-container-lowest shadow-2xl max-md:flex-col"
             >
                 <!-- Close icon (top-right) -->
                 <button
@@ -55,13 +58,19 @@ function maskedPhone(msisdn: string): string {
                     aria-label="Close"
                     @click="dismiss"
                 >
-                    <span class="material-symbols-outlined text-xl leading-none">close</span>
+                    <span class="material-symbols-outlined text-xl leading-none"
+                        >close</span
+                    >
                 </button>
 
                 <!-- Left — product image panel -->
-                <div class="relative flex w-2/5 shrink-0 items-center justify-center bg-surface-container p-8 pt-10">
+                <div
+                    class="relative flex w-2/5 shrink-0 items-center justify-center bg-surface-container p-8 pt-10 max-md:w-full"
+                >
                     <!-- Gold top accent bar -->
-                    <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-[#ca8a04] via-[#facc15] to-[#ca8a04]" />
+                    <div
+                        class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-[#ca8a04] via-[#facc15] to-[#ca8a04]"
+                    />
 
                     <div
                         class="rounded-2xl border-4 border-[#facc15] bg-surface-container-high p-4 shadow-lg shadow-[#facc15]/20"
@@ -76,7 +85,9 @@ function maskedPhone(msisdn: string): string {
                             v-else
                             class="flex h-56 w-full items-center justify-center"
                         >
-                            <span class="material-symbols-outlined text-6xl text-secondary">
+                            <span
+                                class="material-symbols-outlined text-6xl text-secondary"
+                            >
                                 emoji_events
                             </span>
                         </div>
@@ -84,13 +95,18 @@ function maskedPhone(msisdn: string): string {
                 </div>
 
                 <!-- Right — text content -->
-                <div class="flex min-h-[420px] flex-1 flex-col justify-center px-10 py-12">
+                <div
+                    class="flex flex-1 flex-col justify-center px-10 py-12 md:min-h-[420px]"
+                >
                     <!-- Trophy icon -->
-                    <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-[#facc15]/15">
+                    <div
+                        class="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-[#facc15]/15"
+                    >
                         <span
                             class="material-symbols-outlined text-3xl text-[#facc15]"
                             data-weight="fill"
-                        >emoji_events</span>
+                            >emoji_events</span
+                        >
                     </div>
 
                     <!-- Congratulations heading -->
@@ -102,22 +118,29 @@ function maskedPhone(msisdn: string): string {
                     </h2>
 
                     <!-- Subtitle -->
-                    <p class="mb-6 text-sm font-medium leading-relaxed text-on-surface/70">
+                    <p
+                        class="mb-6 text-sm leading-relaxed font-medium text-on-surface/70"
+                    >
                         We have a winner for
-                        <span class="font-bold text-on-surface">{{ props.winner.bid?.name ?? 'this item' }}</span>
+                        <span class="font-bold text-on-surface">{{
+                            props.winner.bid?.name ?? 'this item'
+                        }}</span>
                     </p>
 
                     <!-- Divider -->
                     <div class="mb-6 h-px w-full bg-surface-container" />
 
                     <!-- Winner phone -->
-                    <p class="mb-1 font-headline text-2xl font-extrabold tracking-wide text-on-surface">
+                    <p
+                        class="mb-1 font-headline text-2xl font-extrabold tracking-wide text-on-surface"
+                    >
                         {{ maskedPhone(props.winner.msisdn) }}
                     </p>
 
                     <!-- Points -->
                     <p class="text-base font-bold text-[#facc15]">
-                        Won with {{ props.winner.total_points.toLocaleString() }} points
+                        Won with
+                        {{ props.winner.total_points.toLocaleString() }} points
                     </p>
                 </div>
             </div>

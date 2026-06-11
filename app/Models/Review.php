@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['user_id', 'rating', 'comment', 'bidid', 'social_platform', 'social_handle'])]
+#[Fillable(['user_id', 'rating', 'comment', 'bidid', 'social_platform', 'social_handle', 'moderation_status'])]
 #[Table('carrygo_review')]
 class Review extends Model
 {
@@ -28,6 +28,6 @@ class Review extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'msisdn');
     }
 }

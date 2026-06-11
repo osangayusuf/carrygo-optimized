@@ -23,6 +23,34 @@ const form = useForm({
 
 const hoveredRating = ref(0);
 
+const activeCopiedId = ref<number | null>(null);
+
+function reviewShareUrl(reviewId: number): string {
+    return `${window.location.origin}/reviews/${reviewId}`;
+}
+
+function reviewShareText(bidName: string): string {
+    return `Check out my review of ${bidName} won on CarryGo! 🏆🎉`;
+}
+
+function xShareUrl(reviewId: number, bidName: string): string {
+    const params = new URLSearchParams({
+        text: reviewShareText(bidName),
+        url: reviewShareUrl(reviewId),
+    });
+
+    return `https://x.com/intent/tweet?${params.toString()}`;
+}
+
+function copyReviewLink(reviewId: number) {
+    navigator.clipboard.writeText(reviewShareUrl(reviewId)).then(() => {
+        activeCopiedId.value = reviewId;
+        setTimeout(() => {
+            activeCopiedId.value = null;
+        }, 2000);
+    });
+}
+
 function close() {
     emit('close');
     form.reset();
@@ -106,6 +134,28 @@ function submit() {
                                 <p class="text-sm text-on-surface-variant" style="white-space: pre-wrap;">
                                     {{ review.comment }}
                                 </p>
+
+                                <!-- Share Row -->
+                                <div class="mt-4 border-t border-surface-container pt-3 flex items-center justify-between flex-wrap gap-2 text-xs">
+                                    <span class="text-[10px] text-outline">Share Review:</span>
+                                    <div class="flex items-center gap-2">
+                                        <a :href="`https://api.whatsapp.com/send?text=${encodeURIComponent(reviewShareText(bid.name) + ' ' + reviewShareUrl(review.id))}`" target="_blank" class="text-[#25D366] hover:scale-105 transition-transform flex items-center justify-center p-1.5 bg-[#25D366]/10 rounded-full" title="Share on WhatsApp">
+                                            <span class="pi pi-whatsapp text-xs"></span>
+                                        </a>
+                                        <a :href="`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(reviewShareUrl(review.id))}`" target="_blank" class="text-[#1877F2] hover:scale-105 transition-transform flex items-center justify-center p-1.5 bg-[#1877F2]/10 rounded-full" title="Share on Facebook">
+                                            <span class="pi pi-facebook text-xs"></span>
+                                        </a>
+                                        <a :href="xShareUrl(review.id, bid.name)" target="_blank" class="text-black hover:scale-105 transition-transform flex items-center justify-center p-1.5 bg-black/10 rounded-full" title="Share on X">
+                                            <span class="text-xs font-black leading-none">𝕏</span>
+                                        </a>
+                                        <a :href="`/reviews/${review.id}`" target="_blank" class="text-primary hover:scale-105 transition-transform flex items-center justify-center p-1.5 bg-primary/10 rounded-full" title="View Review Page">
+                                            <span class="pi pi-external-link text-xs"></span>
+                                        </a>
+                                        <button @click="copyReviewLink(review.id)" class="text-secondary hover:scale-105 transition-transform flex items-center justify-center p-1.5 bg-secondary/10 rounded-full cursor-pointer" :title="activeCopiedId === review.id ? 'Copied!' : 'Copy Link'">
+                                            <span class="pi text-xs" :class="activeCopiedId === review.id ? 'pi-check text-forest' : 'pi-link'"></span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -14,7 +14,7 @@ return [
     */
     'winner_popup' => [
         'enabled' => env('WINNER_POPUP_ENABLED', true),
-        'bid_id' => env('WINNER_POPUP_BID_ID', 433),
+        'bid_id' => env('WINNER_POPUP_BID_ID', 799),
     ],
 
     /*
