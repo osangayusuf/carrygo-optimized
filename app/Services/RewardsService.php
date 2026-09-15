@@ -168,7 +168,7 @@ class RewardsService
         $spinsPerDay = (int) config('rewards.spin_wheel.free_spins_per_day', 1);
 
         DB::table('carrygo_users')->update([
-            'spins_balance' => DB::raw("spins_balance + {$spinsPerDay}"),
+            'spins_balance' => $spinsPerDay,
         ]);
     }
 

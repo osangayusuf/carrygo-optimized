@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
+import OpenBidsSection from '@/components/open-bids/OpenBidsSection.vue';
 import type { Bid } from '@/pages/Home.vue';
 import type { LengthAwarePaginator } from '@/types';
-import OpenBidsSection from '@/components/open-bids/OpenBidsSection.vue';
 
 defineProps<{
     bids: LengthAwarePaginator<Bid>;
@@ -12,8 +12,5 @@ defineProps<{
 
 <template>
     <Head title="Open Bids" />
-    <OpenBidsSection
-        :bids="bids"
-        :userPoints="userPoints"
-    />
+    <OpenBidsSection :bids="bids" :userPoints="userPoints" />
 </template>

@@ -2,12 +2,12 @@
 import { router, usePage } from '@inertiajs/vue3';
 import { Form, Head, Link } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
-import { home, profile } from '@/routes';
 import { store as claimStore } from '@/actions/App/Http/Controllers/RewardClaimController';
 import AchievementBadgesSection from '@/components/rewards/AchievementBadgesSection.vue';
 import DailyCheckinSection from '@/components/rewards/DailyCheckinSection.vue';
 import SpinWheelSection from '@/components/rewards/SpinWheelSection.vue';
 import WeeklyLeaderboardSection from '@/components/rewards/WeeklyLeaderboardSection.vue';
+import { home, profile } from '@/routes';
 
 defineProps<{
     checkin: {
@@ -90,7 +90,9 @@ watch(
 );
 
 function onSpun(pointsWon: number) {
-    showToast(`🎉 You won ${pointsWon} pts! Claim them from your wallet above.`);
+    showToast(
+        `🎉 You won ${pointsWon} pts! Claim them from your wallet above.`,
+    );
     router.reload({ only: ['wallet'] });
 }
 </script>
@@ -102,10 +104,14 @@ function onSpun(pointsWon: number) {
         <div class="mx-auto max-w-3xl">
             <!-- Page header -->
             <div class="mb-8">
-                <h1 class="font-headline text-3xl font-black tracking-tight text-on-surface">
+                <h1
+                    class="font-headline text-3xl font-black tracking-tight text-on-surface"
+                >
                     Task Center
                 </h1>
-                <p class="mt-1 text-on-surface-variant">Complete tasks to earn points</p>
+                <p class="mt-1 text-on-surface-variant">
+                    Complete tasks to earn points
+                </p>
             </div>
 
             <!-- Unclaimed wallet banner -->
@@ -122,10 +128,14 @@ function onSpun(pointsWon: number) {
                         <div class="flex items-center gap-3">
                             <span class="text-2xl">🎁</span>
                             <div>
-                                <p class="font-headline font-bold">Unclaimed Rewards</p>
+                                <p class="font-headline font-bold">
+                                    Unclaimed Rewards
+                                </p>
                                 <p class="text-sm opacity-80">
                                     You have
-                                    <span class="font-black">{{ wallet.unclaimed_points }} pts</span>
+                                    <span class="font-black"
+                                        >{{ wallet.unclaimed_points }} pts</span
+                                    >
                                     ready to claim
                                 </p>
                             </div>
@@ -148,15 +158,23 @@ function onSpun(pointsWon: number) {
                 <AchievementBadgesSection :achievements="achievements" />
 
                 <!-- Invite & Earn -->
-                <div class="rounded-3xl border border-outline-variant/30 bg-surface p-6 shadow-sm sm:p-8">
+                <div
+                    class="rounded-3xl border border-outline-variant/30 bg-surface p-6 shadow-sm sm:p-8"
+                >
                     <div class="flex items-center justify-between">
                         <div>
-                            <h2 class="font-headline text-xl font-bold text-on-surface">
+                            <h2
+                                class="font-headline text-xl font-bold text-on-surface"
+                            >
                                 Invite &amp; Earn
                             </h2>
                             <p class="mt-1 text-sm text-on-surface-variant">
-                                Share your referral link and earn when friends join
-                                <span v-if="referral.referrals_count > 0" class="font-bold text-on-surface">
+                                Share your referral link and earn when friends
+                                join
+                                <span
+                                    v-if="referral.referrals_count > 0"
+                                    class="font-bold text-on-surface"
+                                >
                                     · {{ referral.referrals_count }} referred
                                 </span>
                             </p>
@@ -165,20 +183,38 @@ function onSpun(pointsWon: number) {
                             :href="profile.url()"
                             class="flex items-center gap-1.5 rounded-xl bg-primary/10 px-4 py-2 text-sm font-bold text-primary transition hover:bg-primary/20"
                         >
-                            <span class="material-symbols-outlined text-base!">share</span>
+                            <span class="material-symbols-outlined text-base!"
+                                >share</span
+                            >
                             Share
                         </Link>
                     </div>
                     <div class="mt-4 flex flex-wrap gap-3">
-                        <div class="flex items-center gap-2 rounded-xl bg-background px-4 py-2 text-sm">
-                            <span class="h-2 w-2 rounded-full bg-primary-container"></span>
-                            <span class="text-on-surface-variant">{{ referral.referee_reward_label }}:</span>
-                            <span class="font-bold text-on-surface">{{ referral.referee_points }} pts</span>
+                        <div
+                            class="flex items-center gap-2 rounded-xl bg-background px-4 py-2 text-sm"
+                        >
+                            <span
+                                class="h-2 w-2 rounded-full bg-primary-container"
+                            ></span>
+                            <span class="text-on-surface-variant"
+                                >{{ referral.referee_reward_label }}:</span
+                            >
+                            <span class="font-bold text-on-surface"
+                                >{{ referral.referee_points }} pts</span
+                            >
                         </div>
-                        <div class="flex items-center gap-2 rounded-xl bg-background px-4 py-2 text-sm">
-                            <span class="h-2 w-2 rounded-full bg-primary"></span>
-                            <span class="text-on-surface-variant">{{ referral.referrer_reward_label }}:</span>
-                            <span class="font-bold text-on-surface">{{ referral.referrer_points }} pts</span>
+                        <div
+                            class="flex items-center gap-2 rounded-xl bg-background px-4 py-2 text-sm"
+                        >
+                            <span
+                                class="h-2 w-2 rounded-full bg-primary"
+                            ></span>
+                            <span class="text-on-surface-variant"
+                                >{{ referral.referrer_reward_label }}:</span
+                            >
+                            <span class="font-bold text-on-surface"
+                                >{{ referral.referrer_points }} pts</span
+                            >
                         </div>
                     </div>
                 </div>
@@ -193,7 +229,9 @@ function onSpun(pointsWon: number) {
                     :href="home.url()"
                     class="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline"
                 >
-                    <span class="material-symbols-outlined text-lg!">arrow_back</span>
+                    <span class="material-symbols-outlined text-lg!"
+                        >arrow_back</span
+                    >
                     Back to Bidding
                 </Link>
             </div>
@@ -221,7 +259,7 @@ function onSpun(pointsWon: number) {
             <span class="material-symbols-outlined shrink-0 text-xl!">
                 {{ toast.type === 'success' ? 'check_circle' : 'error' }}
             </span>
-            <p class="text-sm font-medium leading-snug">{{ toast.message }}</p>
+            <p class="text-sm leading-snug font-medium">{{ toast.message }}</p>
         </div>
     </Transition>
 </template>

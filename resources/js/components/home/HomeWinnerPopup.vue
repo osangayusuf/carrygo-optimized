@@ -2,11 +2,11 @@
 import { onMounted, ref } from 'vue';
 import type { Winner } from '@/pages/Home.vue';
 
-const SESSION_KEY = 'winner_popup_dismissed';
-
 const props = defineProps<{
     winner: Winner;
 }>();
+
+const SESSION_KEY = `winner_popup_dismissed_${props.winner.bidid}`;
 
 const isVisible = ref(false);
 

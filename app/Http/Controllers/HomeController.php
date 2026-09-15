@@ -67,22 +67,35 @@ class HomeController extends Controller
                 ->first(['id', 'msisdn', 'total_points', 'bidid', 'created_at']);
         }
 
-        /** @var array{enabled: bool, bid_id: int|null} $eventConfig */
+        /** @var array{enabled: bool, items: array<int, array{bid_id: int, title: string}>} $eventConfig */
         $eventConfig = config('promotions.event_popup');
-        $eventPopupBid = null;
+        $eventPopupBids = [];
 
-        if ($eventConfig['enabled'] && $eventConfig['bid_id']) {
-            $eventPopupBid = Bid::query()
+        if ($eventConfig['enabled'] && ! empty($eventConfig['items'])) {
+            $bidIds = array_column($eventConfig['items'], 'bid_id');
+
+            $bidsById = Bid::query()
                 ->with('bidActive')
-                ->where('id', $eventConfig['bid_id'])
+                ->whereIn('id', $bidIds)
                 ->where('status', BidStatus::Live)
-                ->first(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at']);
+                ->get(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at'])
+                ->keyBy('id');
 
-            if ($eventPopupBid) {
-                $eventPopupBid->ends_at = in_array($eventPopupBid->status, [BidStatus::Live], true)
-                    ? $eventPopupBid->bidActive?->created_at?->copy()->addHours((int) $eventPopupBid->open_date)?->toISOString()
-                    : null;
-            }
+            $eventPopupBids = collect($eventConfig['items'])
+                ->filter(fn (array $item): bool => $bidsById->has($item['bid_id']))
+                ->map(function (array $item) use ($bidsById): array {
+                    $bid = $bidsById->get($item['bid_id']);
+                    $bid->ends_at = in_array($bid->status, [BidStatus::Live], true)
+                        ? $bid->bidActive?->created_at?->copy()->addHours((int) $bid->open_date)?->toISOString()
+                        : null;
+
+                    return [
+                        'title' => $item['title'],
+                        'bid' => $bid,
+                    ];
+                })
+                ->values()
+                ->all();
         }
 
         /** @var User|null $authUser */
@@ -201,7 +214,7 @@ class HomeController extends Controller
             'userPoints' => $userPoints,
             'reviews' => $reviews,
             'winnerPopup' => $winnerPopup,
-            'eventPopupBid' => $eventPopupBid,
+            'eventPopupBids' => $eventPopupBids,
         ]);
     }
 }

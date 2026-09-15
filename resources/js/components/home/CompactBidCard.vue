@@ -18,9 +18,11 @@ function progressPct(bid: Bid): number {
         return 0;
     }
 
-    return Math.min(100, Math.round(((bid.bid_entry_points ?? 0) / bid.open_points) * 100));
+    return Math.min(
+        100,
+        Math.round(((bid.bid_entry_points ?? 0) / bid.open_points) * 100),
+    );
 }
-
 
 function getRemainingTime(endsAt: string | null | undefined): string {
     if (!endsAt) {
@@ -43,10 +45,12 @@ function getRemainingTime(endsAt: string | null | undefined): string {
 
 <template>
     <div
-        class="group flex w-auto md:min-w-0 shrink-0 snap-start cursor-pointer flex-col overflow-hidden rounded-2xl border border-surface-container bg-surface-container-lowest transition-all hover:shadow-md"
+        class="group flex w-auto shrink-0 cursor-pointer snap-start flex-col overflow-hidden rounded-2xl border border-surface-container bg-surface-container-lowest transition-all hover:shadow-md md:min-w-0"
         @click="emit('click')"
     >
-        <div class="relative aspect-square overflow-hidden bg-surface-container-low">
+        <div
+            class="relative aspect-square overflow-hidden bg-surface-container-low"
+        >
             <img
                 :alt="bid.name"
                 class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -71,7 +75,10 @@ function getRemainingTime(endsAt: string | null | undefined): string {
             </div>
         </div>
         <div class="flex grow flex-col p-3">
-            <h3 class="mb-1 truncate font-headline text-sm font-extrabold text-on-surface" :title="bid.name">
+            <h3
+                class="mb-1 truncate font-headline text-sm font-extrabold text-on-surface"
+                :title="bid.name"
+            >
                 {{ bid.name }}
             </h3>
             <p class="mb-2 text-sm font-black text-primary">
@@ -79,28 +86,48 @@ function getRemainingTime(endsAt: string | null | undefined): string {
             </p>
             <div class="mt-auto">
                 <div class="mb-1 flex items-center justify-between">
-                    <span class="text-[10px] font-bold text-secondary truncate">
+                    <span class="truncate text-[10px] font-bold text-secondary">
                         {{ bid.bid_entry_points ?? 0 }}/{{ bid.open_points }}
                     </span>
                     <span
                         class="text-[10px] font-black"
-                        :class="progressPct(bid) >= 100 ? 'text-error' : 'text-primary'"
+                        :class="
+                            progressPct(bid) >= 100
+                                ? 'text-error'
+                                : 'text-primary'
+                        "
                     >
                         {{ progressPct(bid) }}%
                     </span>
                 </div>
-                <div class="h-1.5 w-full overflow-hidden rounded-full bg-surface-container-highest">
+                <div
+                    class="h-1.5 w-full overflow-hidden rounded-full bg-surface-container-highest"
+                >
                     <div
                         class="h-full rounded-full transition-all duration-500"
                         :style="{ width: progressPct(bid) + '%' }"
-                        :class="progressPct(bid) >= 100 ? 'bg-error' : 'bg-linear-to-r from-primary to-tertiary'"
+                        :class="
+                            progressPct(bid) >= 100
+                                ? 'bg-error'
+                                : 'bg-linear-to-r from-primary to-tertiary'
+                        "
                     />
                 </div>
 
-                <div v-if="(bid.status === 1 || progressPct(bid) >= 100) && bid.ends_at"
-                    class="mt-2 text-center text-[9px] font-bold text-outline">
-                    <span class="material-symbols-outlined mr-1 align-middle text-[12px]">schedule</span>
-                    <span class="align-middle">{{ getRemainingTime(bid.ends_at) }} left</span>
+                <div
+                    v-if="
+                        (bid.status === 1 || progressPct(bid) >= 100) &&
+                        bid.ends_at
+                    "
+                    class="mt-2 text-center text-[9px] font-bold text-outline"
+                >
+                    <span
+                        class="material-symbols-outlined mr-1 align-middle text-[12px]"
+                        >schedule</span
+                    >
+                    <span class="align-middle"
+                        >{{ getRemainingTime(bid.ends_at) }} left</span
+                    >
                 </div>
             </div>
         </div>

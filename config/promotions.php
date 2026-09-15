@@ -22,14 +22,17 @@ return [
     | Event Popup
     |--------------------------------------------------------------------------
     |
-    | If enabled, the homepage will show a promotional popup for a specific
-    | event bid. Users can bid directly from this popup.
-    | Set EVENT_POPUP_BID_ID to null (or omit the env var) to disable.
+    | If enabled, the homepage will show a promotional popup for configured
+    | event bids. Each item has a bid_id and display title. Item names come
+    | from the database. Set enabled to false to disable.
     |
     */
     'event_popup' => [
         'enabled' => env('EVENT_POPUP_ENABLED', true),
-        'bid_id' => env('EVENT_POPUP_BID_ID', 799),
+        'items' => [
+            ['bid_id' => 761, 'title' => 'Bid Aura'],
+            ['bid_id' => 798, 'title' => 'Stylish Aura'],
+        ],
     ],
 
     /*

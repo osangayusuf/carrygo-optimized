@@ -93,4 +93,5 @@ return [
         'question' => 'What is the minimum amount to subscribe to CarryGo?',
         'answer' => '100 NGN.',
     ],
+    
 ];

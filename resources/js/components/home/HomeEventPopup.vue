@@ -3,12 +3,18 @@ import { onMounted, ref } from 'vue';
 import { getRemainingTime } from '@/lib/utils';
 import type { Bid } from '@/pages/Home.vue';
 
-const props = defineProps<{
+export type EventPopupItem = {
+    title: string;
     bid: Bid;
+};
+
+const props = defineProps<{
+    items: EventPopupItem[];
 }>();
 
 const emit = defineEmits<{
     (e: 'open-bid-modal', bid: Bid): void;
+    (e: 'close'): void;
 }>();
 
 const isVisible = ref(false);
@@ -21,14 +27,14 @@ function dismiss(): void {
     isVisible.value = false;
 }
 
-function bidNow(): void {
-    emit('open-bid-modal', props.bid);
+function bidNow(bid: Bid): void {
+    emit('open-bid-modal', bid);
     dismiss();
 }
 </script>
 
 <template>
-    <Transition name="popup">
+    <Transition name="popup" @after-leave="emit('close')">
         <div
             v-if="isVisible"
             class="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -43,11 +49,11 @@ function bidNow(): void {
                 @click="dismiss"
             />
 
-            <!-- Modal card — horizontal two-column layout -->
+            <!-- Modal card -->
             <div
-                class="relative z-10 flex w-full max-w-2xl overflow-hidden rounded-3xl bg-surface-container-lowest shadow-2xl max-md:flex-col"
+                class="relative z-10 flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl bg-surface-container-lowest shadow-2xl"
             >
-                <!-- Close icon (top-right) -->
+                <!-- Close icon -->
                 <button
                     type="button"
                     class="absolute top-4 right-4 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/20 text-white/80 transition-colors hover:bg-black/40 hover:text-white"
@@ -59,86 +65,70 @@ function bidNow(): void {
                     >
                 </button>
 
-                <!-- Left — product image panel -->
+                <!-- Top accent bar -->
                 <div
-                    class="relative flex w-2/5 shrink-0 items-center justify-center bg-surface-container p-8 pt-10 max-md:w-full"
-                >
-                    <!-- Top accent bar -->
-                    <div
-                        class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-forest via-lemon to-forest"
-                    />
+                    class="h-1.5 shrink-0 bg-linear-to-r from-forest via-lemon to-forest"
+                />
 
-                    <div
-                        class="rounded-2xl border-4 border-lemon bg-surface-container-high p-4 shadow-lg shadow-lemon/20"
-                    >
-                        <img
-                            v-if="props.bid.image"
-                            :src="props.bid.image"
-                            :alt="props.bid.name"
-                            class="h-56 w-full object-contain"
-                        />
+                <div class="flex-1 overflow-y-auto px-6 pt-10 pb-8 md:px-10">
+                    <!-- Two items side by side -->
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                         <div
-                            v-else
-                            class="flex h-56 w-full items-center justify-center"
+                            v-for="item in props.items"
+                            :key="item.bid.id"
+                            class="flex flex-col rounded-2xl border border-surface-container bg-surface-container-low p-5"
                         >
-                            <span
-                                class="material-symbols-outlined text-6xl text-secondary"
+                            <h3
+                                class="mb-4 text-center font-headline text-xl font-extrabold tracking-tight text-forest max-md:text-lg"
                             >
-                                stars
-                            </span>
+                                {{ item.title }}
+                            </h3>
+
+                            <div
+                                class="mx-auto mb-4 w-auto max-w-[220px] rounded-2xl border-4 border-lemon bg-surface-container-high p-4 shadow-lg shadow-lemon/20"
+                            >
+                                <img
+                                    v-if="item.bid.image"
+                                    :src="item.bid.image"
+                                    :alt="item.bid.name"
+                                    class="h-20 w-auto object-contain md:h-44"
+                                />
+                                <div
+                                    v-else
+                                    class="flex h-44 w-full items-center justify-center"
+                                >
+                                    <span
+                                        class="material-symbols-outlined text-6xl text-secondary"
+                                    >
+                                        stars
+                                    </span>
+                                </div>
+                            </div>
+
+                            <p
+                                class="mb-2 text-center text-sm leading-relaxed font-medium text-on-surface/70 max-md:text-xs md:mb-4"
+                            >
+                                Don't miss out on
+                                <span class="font-bold text-on-surface">{{
+                                    item.bid.name
+                                }}</span>
+                            </p>
+
+                            <p
+                                class="mb-2 text-center text-base font-bold text-forest max-md:text-sm md:mb-4"
+                            >
+                                Closes in:
+                                {{ getRemainingTime(item.bid.ends_at) }}
+                            </p>
+
+                            <button
+                                class="mt-auto w-full cursor-pointer rounded-xl bg-lemon py-3 text-center font-extrabold text-navy transition-colors hover:bg-amber max-md:text-sm"
+                                @click="bidNow(item.bid)"
+                            >
+                                Bid Now
+                            </button>
                         </div>
                     </div>
-                </div>
-
-                <!-- Right — text content -->
-                <div
-                    class="flex flex-1 flex-col justify-center px-10 py-12 md:min-h-[420px]"
-                >
-                    <!-- Icon -->
-                    <div
-                        class="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-lemon/15"
-                    >
-                        <span
-                            class="material-symbols-outlined text-3xl text-forest"
-                            data-weight="fill"
-                            >stars</span
-                        >
-                    </div>
-
-                    <!-- Heading -->
-                    <h2
-                        id="event-popup-title"
-                        class="mb-3 font-headline text-4xl font-extrabold tracking-tight text-forest drop-shadow-[0_2px_8px_rgba(250,204,21,0.4)] max-md:text-2xl"
-                    >
-                        Special Event!
-                    </h2>
-
-                    <!-- Subtitle -->
-                    <p
-                        class="mb-6 text-sm leading-relaxed font-medium text-on-surface/70 max-md:mb-3 max-md:text-xs"
-                    >
-                        Don't miss out on
-                        <span class="font-bold text-on-surface">{{
-                            props.bid.name
-                        }}</span>
-                    </p>
-
-                    <!-- Divider -->
-                    <div class="mb-6 h-px w-full bg-surface-container" />
-
-                    <!-- Ends at -->
-                    <p
-                        class="mb-4 text-base font-bold text-forest max-md:mb-2 max-md:text-sm"
-                    >
-                        Closes in: {{ getRemainingTime(props.bid.ends_at) }}
-                    </p>
-
-                    <button
-                        @click="bidNow"
-                        class="mt-auto w-full cursor-pointer rounded-xl bg-lemon py-3 text-center font-extrabold text-navy transition-colors hover:bg-amber"
-                    >
-                        Bid Now
-                    </button>
                 </div>
             </div>
         </div>

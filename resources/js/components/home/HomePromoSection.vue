@@ -10,7 +10,7 @@ import { tasks } from '@/routes';
             >
                 <div class="relative z-10">
                     <h2
-                        class="font-headline mb-4 text-4xl leading-tight font-extrabold"
+                        class="mb-4 font-headline text-4xl leading-tight font-extrabold"
                     >
                         Win More<br />
                         Points.
@@ -41,7 +41,7 @@ import { tasks } from '@/routes';
                     >verified_user</span
                 >
                 <div>
-                    <h3 class="font-headline mb-2 text-2xl font-extrabold">
+                    <h3 class="mb-2 font-headline text-2xl font-extrabold">
                         Verified Integrity
                     </h3>
                     <p class="text-sm font-medium text-secondary">

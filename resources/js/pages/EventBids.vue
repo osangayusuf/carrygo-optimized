@@ -12,8 +12,5 @@ defineProps<{
 
 <template>
     <Head title="Event Items" />
-    <EventBidsSection
-        :bids="bids"
-        :userPoints="userPoints"
-    />
+    <EventBidsSection :bids="bids" :userPoints="userPoints" />
 </template>

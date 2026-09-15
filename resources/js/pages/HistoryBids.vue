@@ -27,8 +27,5 @@ defineProps<{
 
 <template>
     <Head title="Won Bids History" />
-    <HistoryBidsSection
-        :bids="bids"
-        :userPoints="userPoints"
-    />
+    <HistoryBidsSection :bids="bids" :userPoints="userPoints" />
 </template>
