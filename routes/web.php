@@ -10,6 +10,7 @@ use App\Http\Controllers\HowToPlayController;
 use App\Http\Controllers\LeaderboardBidsController;
 use App\Http\Controllers\OpenBidsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RewardClaimController;
 use App\Http\Controllers\SpinController;
 use App\Http\Controllers\TaskCenterController;
@@ -19,14 +20,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Public review sharing pages
+Route::get('/reviews/{review}', [ReviewController::class, 'show'])->name('reviews.show');
+Route::get('/reviews/{review}/image', [ReviewController::class, 'image'])->name('reviews.image');
+
 Route::get('/open-bids', [OpenBidsController::class, 'index'])->name('open-bids');
 Route::get('/how-to-play', [HowToPlayController::class, 'index'])->name('how-to-play');
 Route::get('/terms', [TermsController::class, 'index'])->name('terms');
-Route::get('/login', [MsisdnLoginController::class, 'show'])
-    ->name('login');
 
-Route::post('/login', [MsisdnLoginController::class, 'login'])
-    ->name('login.store');
+Route::middleware('guest')->group(function () {
+    Route::get('/login/{msisdn?}', [MsisdnLoginController::class, 'show'])
+        ->name('login');
+
+    Route::post('/login', [MsisdnLoginController::class, 'login'])
+        ->name('login.store');
+});
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [MsisdnLoginController::class, 'logout'])

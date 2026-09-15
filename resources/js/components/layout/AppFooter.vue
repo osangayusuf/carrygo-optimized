@@ -15,167 +15,142 @@ const year = new Date().getFullYear();
 </script>
 
 <template>
-    <footer
-        class="relative mt-20 w-full overflow-hidden bg-inverse-surface dark:bg-black"
-    >
+    <footer class="mt-7 bg-[#050e05] text-[#8aaa80]">
         <div
-            class="pointer-events-none absolute top-10 left-10 select-none text-3xl font-black tracking-tighter text-white uppercase"
+            class="mx-auto grid max-w-[1300px] grid-cols-1 gap-8 px-4 pt-10 pb-6 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.5fr]"
         >
-            CarryGo
-        </div>
-        <div
-            class="relative z-10 mx-auto grid w-full max-w-screen-2xl grid-cols-1 gap-12 px-12 py-20 md:grid-cols-4"
-        >
-            <div class="md:col-span-1">
-                <p class="font-body my-8 text-sm leading-relaxed text-outline-variant">
-                    Redefining the digital auction experience through transparency,
-                    curation, and elite service. Your gateway to exclusive
-                    opportunities.
-                </p>
-                <div class="flex space-x-4">
-                    <a class="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-inverse-on-surface/80 transition-colors hover:text-primary-container"
+            <div>
+                <div class="mb-2 h-20 w-auto">
+                    <img
+                        :src="`${$page.props.asset_url}carrygo-footer.png`"
+                        alt="CarryGo"
+                        class="h-full w-auto"
+                    />
+                </div>
+                <div class="mb-3.5 text-sm leading-relaxed text-[#4a6a40]">
+                    Redefining the digital auction experience through
+                    transparency, curation, and elite service. Your gateway to
+                    exclusive opportunities.
+                </div>
+                <div class="flex gap-2.5">
+                    <a
                         href="https://www.instagram.com/carrygo_nigeria?igsh=MTdiNHM2ZTJldnp1cA%3D%3D&utm_source=qr"
-                        target="blank">
+                        target="blank"
+                        class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-lemon/20 bg-lemon/10 text-[15px] text-lemon transition-colors hover:bg-forest"
+                    >
                         <span class="pi pi-instagram"></span>
                     </a>
-                    <a class="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-inverse-on-surface/80 transition-colors hover:text-primary-container"
+                    <a
                         href="https://www.facebook.com/share/18TeWUCG19/"
-                        target="blank">
+                        target="blank"
+                        class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-lemon/20 bg-lemon/10 text-[15px] text-lemon transition-colors hover:bg-forest"
+                    >
                         <span class="pi pi-facebook"></span>
                     </a>
                 </div>
+                <div class="mt-4 flex flex-col items-start gap-1">
+                    <span
+                        class="text-[10px] font-semibold tracking-wider text-[#4a6a40] uppercase"
+                        >Customer Support</span
+                    >
+                    <a
+                        href="tel:08077219175"
+                        class="flex items-center gap-1.5 text-sm font-semibold text-[#8aaa80] transition-colors hover:text-lemon"
+                    >
+                        <span class="pi pi-phone text-xs"></span>
+                        0807 721 9175
+                    </a>
+                </div>
             </div>
-            <div class="md:col-span-1">
-                <h4 class="font-headline mb-6 text-lg font-bold text-white">
+            <div>
+                <h4
+                    class="mb-3.5 text-sm font-extrabold tracking-wider text-lemon uppercase"
+                >
                     Auctions
                 </h4>
-                <ul class="space-y-4">
-                    <li>
-                        <Link
-                            class="inline-block text-sm text-outline-variant transition-colors hover:translate-x-1 hover:text-white"
-                            :href="trending.url()"
-                            >Trending Now</Link
-                        >
-                    </li>
-                    <li>
-                        <Link
-                            class="inline-block text-sm text-outline-variant transition-colors hover:translate-x-1 hover:text-white"
-                            :href="openBids.url()"
-                            >Open Bids</Link
-                        >
-                    </li>
-                    <li>
-                        <Link
-                            class="inline-block text-sm text-outline-variant transition-colors hover:translate-x-1 hover:text-white"
-                            :href="events.url()"
-                            >Event Items</Link
-                        >
-                    </li>
-                    <li>
-                        <Link
-                            class="inline-block text-sm text-outline-variant transition-colors hover:translate-x-1 hover:text-white"
-                            :href="leaderboard.url()"
-                            >Leaderboard</Link
-                        >
-                    </li>
-                    <li>
-                        <Link
-                            class="inline-block text-sm text-outline-variant transition-colors hover:translate-x-1 hover:text-white"
-                            :href="howToPlay.url()"
-                            >How to Play</Link
-                        >
-                    </li>
-                </ul>
-            </div>
-            <div class="md:col-span-1">
-                <h4 class="font-headline mb-6 text-lg font-bold text-white">
-                    Account & Support
-                </h4>
-                <ul class="space-y-4">
-                    <li>
-                        <Link
-                            class="inline-block text-sm text-outline-variant transition-colors hover:translate-x-1 hover:text-white"
-                            :href="profile.url()"
-                            >My Profile</Link
-                        >
-                    </li>
-                    <li>
-                        <Link
-                            class="inline-block text-sm text-outline-variant transition-colors hover:translate-x-1 hover:text-white"
-                            :href="tasks.url()"
-                            >Task Center</Link
-                        >
-                    </li>
-                    <li>
-                        <Link
-                            class="inline-block text-sm text-outline-variant transition-colors hover:translate-x-1 hover:text-white"
-                            :href="history.url()"
-                            >Winning History</Link
-                        >
-                    </li>
-                    <li>
-                        <a
-                            class="inline-block text-sm text-outline-variant transition-colors hover:translate-x-1 hover:text-white"
-                            href="#"
-                            >Privacy Policy</a
-                        >
-                    </li>
-                    <li>
-                        <Link
-                            class="inline-block text-sm text-outline-variant transition-colors hover:translate-x-1 hover:text-white"
-                            :href="terms.url()"
-                            >Terms of Service</Link
-                        >
-                    </li>
-                    <li>
-                        <a
-                            class="inline-block text-sm text-outline-variant transition-colors hover:translate-x-1 hover:text-white"
-                            href="#"
-                            >Contact Support</a
-                        >
-                    </li>
-                </ul>
-            </div>
-            <div class="md:col-span-1">
-                <h4 class="font-headline mb-6 text-lg font-bold text-white">
-                    Newsletter
-                </h4>
-                <p class="mb-4 text-sm text-outline-variant">
-                    Stay updated with our latest luxury drops.
-                </p>
-                <div
-                    class="flex overflow-hidden rounded-xl bg-secondary focus-within:ring-2 focus-within:ring-primary-container/50"
+                <Link
+                    :href="trending.url()"
+                    class="mb-2 block text-sm text-[#4a6a40] transition-colors hover:text-lemon"
+                    >Trending Now</Link
                 >
-                    <input
-                        class="w-full border-none bg-transparent px-4 py-3 text-sm text-white focus:ring-0"
-                        placeholder="Your email"
-                        type="email"
-                    />
-                    <button
-                        type="button"
-                        class="flex items-center justify-center bg-primary px-4 text-on-primary"
-                    >
-                        <span class="material-symbols-outlined">send</span>
-                    </button>
-                </div>
+                <Link
+                    :href="openBids.url()"
+                    class="mb-2 block text-sm text-[#4a6a40] transition-colors hover:text-lemon"
+                    >Open Bids</Link
+                >
+                <Link
+                    :href="events.url()"
+                    class="mb-2 block text-sm text-[#4a6a40] transition-colors hover:text-lemon"
+                    >Event Items</Link
+                >
+                <Link
+                    :href="leaderboard.url()"
+                    class="mb-2 block text-sm text-[#4a6a40] transition-colors hover:text-lemon"
+                    >Leaderboard</Link
+                >
+                <Link
+                    :href="howToPlay.url()"
+                    class="mb-2 block text-sm text-[#4a6a40] transition-colors hover:text-lemon"
+                    >How to Play</Link
+                >
+            </div>
+            <div>
+                <h4
+                    class="mb-3.5 text-sm font-extrabold tracking-wider text-lemon uppercase"
+                >
+                    Account &amp; Support
+                </h4>
+                <Link
+                    :href="profile.url()"
+                    class="mb-2 block text-sm text-[#4a6a40] transition-colors hover:text-lemon"
+                    >My Profile</Link
+                >
+                <Link
+                    :href="tasks.url()"
+                    class="mb-2 block text-sm text-[#4a6a40] transition-colors hover:text-lemon"
+                    >Task Center</Link
+                >
+                <Link
+                    :href="history.url()"
+                    class="mb-2 block text-sm text-[#4a6a40] transition-colors hover:text-lemon"
+                    >Winning History</Link
+                >
+                <a
+                    href="#"
+                    class="mb-2 block text-sm text-[#4a6a40] transition-colors hover:text-lemon"
+                    >Privacy Policy</a
+                >
+                <Link
+                    :href="terms.url()"
+                    class="mb-2 block text-sm text-[#4a6a40] transition-colors hover:text-lemon"
+                    >Terms of Service</Link
+                >
+                <a
+                    href="#"
+                    class="mb-2 block text-sm text-[#4a6a40] transition-colors hover:text-lemon"
+                    >Contact Support</a
+                >
             </div>
         </div>
         <div
-            class="mx-auto flex max-w-screen-2xl flex-col items-center justify-between gap-4 border-t border-secondary px-12 py-8 md:flex-row"
+            class="mx-auto flex max-w-[1300px] flex-col items-center justify-between gap-4 border-t border-[#0f2010] p-4 text-xs text-[#2a4030] md:flex-row"
         >
-            <p class="font-body text-sm text-outline">
-                © {{ year }} CarryGo Executive. All rights reserved.
-            </p>
-            <div class="flex gap-8">
+            <span>© {{ year }} CarryGo Executive. All rights reserved.</span>
+            <div class="flex gap-4">
                 <a
-                    class="text-xs text-outline hover:text-primary-container"
                     href="#"
+                    class="text-[#2a4030] transition-colors hover:text-lemon"
                     >Cookie Settings</a
                 >
                 <a
-                    class="text-xs text-outline hover:text-primary-container"
                     href="#"
+                    class="text-[#2a4030] transition-colors hover:text-lemon"
                     >Security</a
+                >
+                <a
+                    href="#"
+                    class="text-[#2a4030] transition-colors hover:text-lemon"
+                    >Privacy</a
                 >
             </div>
         </div>

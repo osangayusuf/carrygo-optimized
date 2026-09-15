@@ -25,59 +25,24 @@ class HomeController extends Controller
             ->pluck('category')
             ->values();
 
-        $heroPool = Bid::query()
-            ->whereIn('status', [BidStatus::Upcoming, BidStatus::Live]);
-
-        $featuredPool = (clone $heroPool)
-            ->where('event_special', true);
-
-        $heroQuery = (clone $featuredPool)->exists()
-            ? $featuredPool
-            : $heroPool;
-
-        $heroCount = (clone $heroQuery)->count();
-        $heroBid = null;
-
-        if ($heroCount > 0) {
-            $seed = abs(crc32(now()->toDateString()));
-            $offset = $seed % $heroCount;
-
-            $heroBid = (clone $heroQuery)
-                ->orderBy('id')
-                ->offset($offset)
-                ->limit(1)
-                ->first([
-                    'id',
-                    'name',
-                    'image',
-                    'url',
-                    'price',
-                    'open_points',
-                    'rating',
-                    'open_date',
-                    'status',
-                    'created_at',
-                ]);
-        }
-
         $baseQ = Bid::query()->when($request->search, function ($q, $search) {
             $q->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('price', 'like', "%{$search}%");
             });
-        });
+        })
+            ->where('status', BidStatus::Live);
 
-        $bids = $baseQ
+        $bids = (clone $baseQ)
             ->with(['bidActive'])
-            ->whereIn('status', [BidStatus::Upcoming, BidStatus::Live])
             ->withSum('bidEntries as bid_entry_points', 'points')
             ->withSum('bidActives as bid_active_points', 'points')
             ->inRandomOrder()
-            ->limit(12)
+            ->limit(10)
             ->get(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at']);
 
         $bids->transform(function (Bid $bid) {
-            $bid->ends_at = in_array($bid->status, [BidStatus::Live, BidStatus::Closed], true)
+            $bid->ends_at = in_array($bid->status, [BidStatus::Live], true)
                 ? $bid->bidActive?->created_at?->copy()->addHours((int) $bid->open_date)?->toISOString()
                 : null;
 
@@ -102,6 +67,37 @@ class HomeController extends Controller
                 ->first(['id', 'msisdn', 'total_points', 'bidid', 'created_at']);
         }
 
+        /** @var array{enabled: bool, items: array<int, array{bid_id: int, title: string}>} $eventConfig */
+        $eventConfig = config('promotions.event_popup');
+        $eventPopupBids = [];
+
+        if ($eventConfig['enabled'] && ! empty($eventConfig['items'])) {
+            $bidIds = array_column($eventConfig['items'], 'bid_id');
+
+            $bidsById = Bid::query()
+                ->with('bidActive')
+                ->whereIn('id', $bidIds)
+                ->where('status', BidStatus::Live)
+                ->get(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at'])
+                ->keyBy('id');
+
+            $eventPopupBids = collect($eventConfig['items'])
+                ->filter(fn (array $item): bool => $bidsById->has($item['bid_id']))
+                ->map(function (array $item) use ($bidsById): array {
+                    $bid = $bidsById->get($item['bid_id']);
+                    $bid->ends_at = in_array($bid->status, [BidStatus::Live], true)
+                        ? $bid->bidActive?->created_at?->copy()->addHours((int) $bid->open_date)?->toISOString()
+                        : null;
+
+                    return [
+                        'title' => $item['title'],
+                        'bid' => $bid,
+                    ];
+                })
+                ->values()
+                ->all();
+        }
+
         /** @var User|null $authUser */
         $authUser = Auth::user();
         $userPoints = $authUser?->activePoint?->points;
@@ -114,9 +110,8 @@ class HomeController extends Controller
             ->limit(6)
             ->get();
 
-        $trendingBids = $baseQ
+        $trendingBids = (clone $baseQ)
             ->with('bidActive')
-            ->whereIn('status', [BidStatus::Upcoming, BidStatus::Live])
             ->withSum('bidEntries as bid_entry_points', 'points')
             ->withSum('bidActives as bid_active_points', 'points')
             ->has('bidEntries')
@@ -130,14 +125,30 @@ class HomeController extends Controller
             ->get(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at']);
 
         $trendingBids->transform(function (Bid $bid) {
-            $bid->ends_at = in_array($bid->status, [BidStatus::Live, BidStatus::Closed], true)
+            $bid->ends_at = in_array($bid->status, [BidStatus::Live], true)
                 ? $bid->bidActive?->created_at?->copy()->addHours((int) $bid->open_date)?->toISOString()
                 : null;
 
             return $bid;
         });
 
-        $openBids = $baseQ->with('bidActive')
+        $recentlyAddedBids = (clone $baseQ)
+            ->with('bidActive')
+            ->withSum('bidEntries as bid_entry_points', 'points')
+            ->withSum('bidActives as bid_active_points', 'points')
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at']);
+
+        $recentlyAddedBids->transform(function (Bid $bid) {
+            $bid->ends_at = in_array($bid->status, [BidStatus::Live], true)
+                ? $bid->bidActive?->created_at?->copy()->addHours((int) $bid->open_date)?->toISOString()
+                : null;
+
+            return $bid;
+        });
+
+        $openBids = (clone $baseQ)->with('bidActive')
             ->where('status', BidStatus::Live)
             ->has('bidActive')
             ->withSum('bidActives as bid_active_points', 'points')
@@ -147,7 +158,7 @@ class HomeController extends Controller
             ->get(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at']);
 
         $openBids->transform(function (Bid $bid) {
-            $bid->ends_at = in_array($bid->status, [BidStatus::Live, BidStatus::Closed], true)
+            $bid->ends_at = in_array($bid->status, [BidStatus::Live], true)
                 ? $bid->bidActive?->created_at?->copy()->addHours((int) $bid->open_date)?->toISOString()
                 : null;
 
@@ -157,14 +168,16 @@ class HomeController extends Controller
         $topCategories = $categories->take(4);
         $categoryBids = [];
         foreach ($topCategories as $cat) {
-            $catBids = $baseQ->with('bidActive')
+            $catBids = (clone $baseQ)->with('bidActive')
+                ->withSum('bidEntries as bid_entry_points', 'points')
+                ->withSum('bidActives as bid_active_points', 'points')
                 ->where('category', $cat)
                 ->orderByDesc('id')
                 ->limit(10)
                 ->get(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at']);
 
             $catBids->transform(function (Bid $bid) {
-                $bid->ends_at = in_array($bid->status, [BidStatus::Live, BidStatus::Closed], true)
+                $bid->ends_at = in_array($bid->status, [BidStatus::Live], true)
                     ? $bid->bidActive?->created_at?->copy()->addHours((int) $bid->open_date)?->toISOString()
                     : null;
 
@@ -173,13 +186,15 @@ class HomeController extends Controller
             $categoryBids[$cat] = $catBids;
         }
 
-        $luxuryBids = $baseQ->with('bidActive')
+        $luxuryBids = (clone $baseQ)->with('bidActive')
+            ->withSum('bidEntries as bid_entry_points', 'points')
+            ->withSum('bidActives as bid_active_points', 'points')
             ->orderByRaw("CAST(REPLACE(price, ',', '') AS UNSIGNED) DESC")
             ->limit(10)
             ->get(['id', 'name', 'image', 'url', 'price', 'open_points', 'rating', 'open_date', 'status', 'created_at']);
 
         $luxuryBids->transform(function (Bid $bid) {
-            $bid->ends_at = in_array($bid->status, [BidStatus::Live, BidStatus::Closed], true)
+            $bid->ends_at = in_array($bid->status, [BidStatus::Live], true)
                 ? $bid->bidActive?->created_at?->copy()->addHours((int) $bid->open_date)?->toISOString()
                 : null;
 
@@ -187,8 +202,9 @@ class HomeController extends Controller
         });
 
         return Inertia::render('Home', [
-            'heroBid' => $heroBid,
+            'faqs' => config('faqs', []),
             'bids' => $bids,
+            'recentlyAddedBids' => $recentlyAddedBids,
             'trendingBids' => $trendingBids,
             'openBids' => $openBids,
             'luxuryBids' => $luxuryBids,
@@ -198,6 +214,7 @@ class HomeController extends Controller
             'userPoints' => $userPoints,
             'reviews' => $reviews,
             'winnerPopup' => $winnerPopup,
+            'eventPopupBids' => $eventPopupBids,
         ]);
     }
 }

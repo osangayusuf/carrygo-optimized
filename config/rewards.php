@@ -81,6 +81,20 @@ return [
             'points' => 5,
             'target' => 500,
         ],
+        'refer_a_friend' => [
+            'label' => 'Refer a Friend',
+            'description' => 'Invite a friend who joins via your referral link',
+            'icon' => 'group_add',
+            'points' => 5,
+            'target' => 1,
+        ],
+        'join_via_referral' => [
+            'label' => 'Joined via Referral',
+            'description' => 'Sign up using a friend\'s referral link',
+            'icon' => 'person_add',
+            'points' => 5,
+            'target' => 1,
+        ],
     ],
 
     /*
@@ -88,6 +102,13 @@ return [
     | Weekly Leaderboard
     |--------------------------------------------------------------------------
     */
+    'referral' => [
+        'referee_points' => 100,
+        'referrer_points' => 50,
+        'referee_reward_label' => 'Your friend receives',
+        'referrer_reward_label' => 'You receive',
+    ],
+
     'leaderboard' => [
         /**
          * Points awarded to top bidders at end of week.

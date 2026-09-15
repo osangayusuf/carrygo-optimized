@@ -59,14 +59,16 @@ function relativeTime(dateStr: string): string {
                 </p>
             </div>
         </div>
-        <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 overflow-hidden px-4 md:px-8 pb-2">
+        <div
+            class="flex flex-col gap-6 overflow-hidden px-4 pb-2 md:px-8 lg:flex-row lg:gap-8"
+        >
             <div
                 v-if="latestWinner"
-                class="w-full lg:w-auto lg:min-w-[320px] shrink-0 rounded-2xl border-2 border-primary-container/20 bg-surface-container-lowest p-6 shadow-sm transition-shadow hover:shadow-md"
+                class="w-full shrink-0 rounded-2xl border-2 border-primary-container/20 bg-surface-container-lowest p-6 shadow-sm transition-shadow hover:shadow-md lg:w-auto lg:min-w-[320px]"
             >
                 <div class="mb-4 flex items-center gap-4">
                     <div
-                        class="flex h-12 w-12 items-center justify-center rounded-full text-primary bg-primary-container/30"
+                        class="flex h-12 w-12 items-center justify-center rounded-full bg-primary-container/30 text-primary"
                     >
                         <span
                             class="material-symbols-outlined"
@@ -84,7 +86,12 @@ function relativeTime(dateStr: string): string {
                     </div>
                 </div>
                 <h3 class="mb-1 font-headline text-lg font-bold">
-                    {{ (latestWinner.bid?.name ?? '—').length > 25 ? (latestWinner.bid?.name ?? '—').substring(0, 25) + '...' : (latestWinner.bid?.name ?? '—') }}
+                    {{
+                        (latestWinner.bid?.name ?? '—').length > 25
+                            ? (latestWinner.bid?.name ?? '—').substring(0, 25) +
+                              '...'
+                            : (latestWinner.bid?.name ?? '—')
+                    }}
                 </h3>
                 <div
                     class="mt-4 flex items-center justify-between border-t border-surface-container pt-4"
@@ -94,8 +101,9 @@ function relativeTime(dateStr: string): string {
                             >stars</span
                         >
                         <span class="text-sm font-bold">
-                            Won with {{ latestWinner.total_points.toLocaleString() }} points
-
+                            Won with
+                            {{ latestWinner.total_points.toLocaleString() }}
+                            points
                         </span>
                     </div>
                     <span class="text-xs font-medium text-secondary italic">
@@ -106,55 +114,71 @@ function relativeTime(dateStr: string): string {
 
             <div
                 v-if="remainingWinners.length"
-                class="winners-marquee flex-1 min-w-0"
-                :class="{ 'winners-marquee--static': remainingWinners.length <= 1 }"
+                class="winners-marquee min-w-0 flex-1"
+                :class="{
+                    'winners-marquee--static': remainingWinners.length <= 1,
+                }"
                 :style="{ '--winners-marquee-duration': `${marqueeDuration}s` }"
             >
                 <div class="winners-marquee__track">
-                <div
-                    v-for="(winner, i) in loopWinners"
-                    :key="`${winner.id}-${i}`"
-                    class="min-w-[320px] shrink-0 rounded-2xl bg-surface-container-lowest p-6 shadow-sm transition-shadow hover:shadow-md"
-                >
-                    <div class="mb-4 flex items-center gap-4">
-                        <div
-                            class="flex h-12 w-12 items-center justify-center rounded-full text-primary bg-secondary-container"
-                        >
-                            <span
-                                class="material-symbols-outlined"
-                                data-weight="fill"
-                                >person</span
-                            >
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold">
-                                {{ maskedPhone(winner.msisdn).prefix }}
-                                <span class="text-secondary opacity-50">***</span>
-                                {{ maskedPhone(winner.msisdn).suffix }}
-                            </p>
-                            <p class="text-xs text-secondary">Verified Winner</p>
-                        </div>
-                    </div>
-                    <h3 class="mb-1 font-headline text-lg font-bold">
-                        {{ (winner.bid?.name ?? '—').length > 25 ? (winner.bid?.name ?? '—').substring(0, 25) + '...' : (winner.bid?.name ?? '—') }}
-                    </h3>
                     <div
-                        class="mt-4 flex items-center justify-between border-t border-surface-container pt-4"
+                        v-for="(winner, i) in loopWinners"
+                        :key="`${winner.id}-${i}`"
+                        class="min-w-[320px] shrink-0 rounded-2xl bg-surface-container-lowest p-6 shadow-sm transition-shadow hover:shadow-md"
                     >
-                        <div class="flex items-center gap-1 text-tertiary">
-                            <span class="material-symbols-outlined text-sm"
-                                >stars</span
+                        <div class="mb-4 flex items-center gap-4">
+                            <div
+                                class="flex h-12 w-12 items-center justify-center rounded-full bg-secondary-container text-primary"
                             >
-                            <span class="text-sm font-bold">
-                                Won with {{ winner.total_points.toLocaleString() }} points
-
+                                <span
+                                    class="material-symbols-outlined"
+                                    data-weight="fill"
+                                    >person</span
+                                >
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold">
+                                    {{ maskedPhone(winner.msisdn).prefix }}
+                                    <span class="text-secondary opacity-50"
+                                        >***</span
+                                    >
+                                    {{ maskedPhone(winner.msisdn).suffix }}
+                                </p>
+                                <p class="text-xs text-secondary">
+                                    Verified Winner
+                                </p>
+                            </div>
+                        </div>
+                        <h3 class="mb-1 font-headline text-lg font-bold">
+                            {{
+                                (winner.bid?.name ?? '—').length > 25
+                                    ? (winner.bid?.name ?? '—').substring(
+                                          0,
+                                          25,
+                                      ) + '...'
+                                    : (winner.bid?.name ?? '—')
+                            }}
+                        </h3>
+                        <div
+                            class="mt-4 flex items-center justify-between border-t border-surface-container pt-4"
+                        >
+                            <div class="flex items-center gap-1 text-tertiary">
+                                <span class="material-symbols-outlined text-sm"
+                                    >stars</span
+                                >
+                                <span class="text-sm font-bold">
+                                    Won with
+                                    {{ winner.total_points.toLocaleString() }}
+                                    points
+                                </span>
+                            </div>
+                            <span
+                                class="text-xs font-medium text-secondary italic"
+                            >
+                                {{ relativeTime(winner.created_at) }}
                             </span>
                         </div>
-                        <span class="text-xs font-medium text-secondary italic">
-                            {{ relativeTime(winner.created_at) }}
-                        </span>
                     </div>
-                </div>
                 </div>
             </div>
         </div>
@@ -170,7 +194,8 @@ function relativeTime(dateStr: string): string {
     display: flex;
     gap: 1.5rem;
     width: max-content;
-    animation: winners-marquee var(--winners-marquee-duration, 24s) linear infinite;
+    animation: winners-marquee var(--winners-marquee-duration, 24s) linear
+        infinite;
     will-change: transform;
 }
 

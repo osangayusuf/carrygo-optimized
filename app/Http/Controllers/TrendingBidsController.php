@@ -26,22 +26,15 @@ class TrendingBidsController extends Controller
             ->pluck('category')
             ->values();
 
-        $statuses = match ($request->status) {
-            'live' => [BidStatus::Live],
-            'upcoming' => [BidStatus::Upcoming],
-            default => [BidStatus::Upcoming, BidStatus::Live],
-        };
-
         $bids = Bid::query()
             ->with('bidActive')
-            ->whereIn('status', $statuses)
+            ->where('status', BidStatus::Live)
             ->withSum('bidEntries as bid_entry_points', 'points')
             ->withSum('bidActives as bid_active_points', 'points')
-            ->has('bidEntries')
-            ->when($request->search, fn ($q, $s) => $q->where(fn ($q) => $q->where('name', 'like', "%{$s}%")
-                ->orWhere('price', 'like', "%{$s}%")
-            )
-            )
+            ->when($request->search, fn ($q, $s) => $q->where(
+                fn ($q) => $q->where('name', 'like', "%{$s}%")
+                    ->orWhere('price', 'like', "%{$s}%")
+            ))
             ->when($request->category, fn ($q, $category) => $q->where('category', $category))
             ->when(
                 $request->sort === 'value_desc',
@@ -57,7 +50,7 @@ class TrendingBidsController extends Controller
             ->withQueryString();
 
         $bids->getCollection()->transform(function (Bid $bid) {
-            $bid->ends_at = in_array($bid->status, [BidStatus::Live, BidStatus::Closed], true)
+            $bid->ends_at = $bid->status === BidStatus::Live
                 ? $bid->bidActive?->created_at?->copy()->addHours((int) $bid->open_date)?->toISOString()
                 : null;
 

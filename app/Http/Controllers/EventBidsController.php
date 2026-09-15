@@ -20,7 +20,7 @@ class EventBidsController extends Controller
         $bids = Bid::query()
             ->with(['bidActive'])
             ->where('event_special', true)
-            ->whereIn('status', [BidStatus::Upcoming, BidStatus::Live])
+            ->whereIn('status', [BidStatus::Live])
             ->withSum('bidEntries as bid_entry_points', 'points')
             ->withSum('bidActives as bid_active_points', 'points')
             ->when($request->search, fn ($q, $s) => $q->where(fn ($q) => $q->where('name', 'like', "%{$s}%")
@@ -31,7 +31,7 @@ class EventBidsController extends Controller
             ->withQueryString();
 
         $bids->getCollection()->transform(function (Bid $bid) {
-            $bid->ends_at = in_array($bid->status, [BidStatus::Live, BidStatus::Closed], true)
+            $bid->ends_at = in_array($bid->status, [BidStatus::Live], true)
                 ? $bid->bidActive?->created_at?->copy()->addHours((int) $bid->open_date)?->toISOString()
                 : null;
 

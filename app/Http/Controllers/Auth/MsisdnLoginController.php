@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ActivePoint;
 use App\Models\User;
 use App\Models\UserAnalytics;
+use App\Services\ReferralService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,8 +15,22 @@ use Inertia\Response;
 
 class MsisdnLoginController extends Controller
 {
-    public function show(): Response
+    public function __construct(private readonly ReferralService $referralService) {}
+
+    public function show(Request $request, ?string $msisdn = null): Response|RedirectResponse
     {
+        $referralCode = $request->query('ref');
+
+        if (is_string($referralCode) && trim($referralCode) !== '') {
+            $request->session()->put('pending_referral_code', strtoupper(trim($referralCode)));
+        }
+
+        $msisdnToLogin = $msisdn ?? $request->query('msisdn');
+
+        if ($msisdnToLogin) {
+            return $this->attemptLogin($msisdnToLogin);
+        }
+
         return Inertia::render('Login');
     }
 
@@ -25,18 +40,23 @@ class MsisdnLoginController extends Controller
             'msisdn' => ['required', 'string'],
         ]);
 
-        $normalizedMsisdn = $this->normalizeMsisdn($validated['msisdn']);
+        return $this->attemptLogin($validated['msisdn']);
+    }
+
+    private function attemptLogin(string $msisdn): RedirectResponse
+    {
+        $normalizedMsisdn = $this->normalizeMsisdn($msisdn);
 
         $active = ActivePoint::query()
             ->where('msisdn', $normalizedMsisdn)
             ->first();
 
         if ($active === null) {
-            return back()
+            return redirect()->route('login')
                 ->withErrors([
                     'msisdn' => 'You are not an active subscriber, please dial *20790# to subscribe.',
                 ])
-                ->withInput();
+                ->withInput(['msisdn' => $msisdn]);
         }
 
         $user = User::firstOrCreate(
@@ -60,9 +80,24 @@ class MsisdnLoginController extends Controller
 
         Auth::login($user);
 
-        $request->session()->regenerate();
+        request()->session()->regenerate();
 
-        return redirect()->intended(route('home'));
+        $redirect = redirect()->intended(route('home'));
+
+        $pendingReferralCode = request()->session()->pull('pending_referral_code');
+
+        if (is_string($pendingReferralCode) && $pendingReferralCode !== '') {
+            $result = $this->referralService->processAfterLogin($user, $pendingReferralCode);
+
+            if ($result['processed']) {
+                $redirect->with(
+                    'success',
+                    'Welcome! Your referral bonus has been added to your rewards wallet.'
+                );
+            }
+        }
+
+        return $redirect;
     }
 
     public function logout(Request $request): RedirectResponse
@@ -72,7 +107,7 @@ class MsisdnLoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('home');
     }
 
     private function normalizeMsisdn(string $raw): string

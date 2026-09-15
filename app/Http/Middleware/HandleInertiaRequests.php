@@ -2,11 +2,30 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Bid;
+use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
+    /**
+     * Handle the incoming request.
+     */
+    public function handle(Request $request, Closure $next)
+    {
+        $response = parent::handle($request, $next);
+
+        if ($request->header('X-Inertia')) {
+            $response->headers->set('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
+            $response->headers->set('Pragma', 'no-cache');
+            $response->headers->set('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
+        }
+
+        return $response;
+    }
+
     /**
      * The root template that's loaded on the first page visit.
      *
@@ -35,6 +54,16 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $categories = Schema::hasTable('carrygo_bid')
+            ? Bid::query()
+                ->whereNotNull('category')
+                ->where('category', '!=', '')
+                ->distinct()
+                ->orderBy('category', 'asc')
+                ->pluck('category')
+                ->values()
+            : collect();
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -42,6 +71,8 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'notifications' => config('promotions.notifications', []),
+            'categories' => $categories,
+            'asset_url' => rtrim(asset(''), '/').'/',
         ];
     }
 }

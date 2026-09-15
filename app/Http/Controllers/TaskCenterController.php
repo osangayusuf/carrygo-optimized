@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\RewardWallet;
+use App\Models\User;
 use App\Models\UserAchievement;
+use App\Services\AchievementService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -12,10 +14,15 @@ use Inertia\Response;
 
 class TaskCenterController extends Controller
 {
+    public function __construct(private readonly AchievementService $achievementService) {}
+
     public function index(Request $request): Response
     {
         $user = $request->user();
         $msisdn = $user->msisdn;
+
+        $this->achievementService->evaluate($user, 'referral_completed');
+        $this->achievementService->evaluate($user, 'referral_joined');
 
         // ── Check-in ──────────────────────────────────────────────────────
         $today = Carbon::today();
@@ -42,7 +49,7 @@ class TaskCenterController extends Controller
             ];
         })->values()->all();
 
-        // ── Achievements ──────────────────────────────────────────────────
+        // ── Achievements ───────────────────────────────────────────────
         $achievementConfig = config('rewards.achievements', []);
         $userAchievements = UserAchievement::where('msisdn', $msisdn)
             ->get()
@@ -145,6 +152,13 @@ class TaskCenterController extends Controller
                 'recent_rewards' => $recentRewards,
             ],
             'user_points' => (int) ($user->activePoint?->points ?? 0),
+            'referral' => [
+                'referee_points' => (int) config('rewards.referral.referee_points', 100),
+                'referrer_points' => (int) config('rewards.referral.referrer_points', 50),
+                'referee_reward_label' => (string) config('rewards.referral.referee_reward_label', 'Your friend receives'),
+                'referrer_reward_label' => (string) config('rewards.referral.referrer_reward_label', 'You receive'),
+                'referrals_count' => User::query()->where('referred_by_user_id', $user->id)->count(),
+            ],
         ]);
     }
 

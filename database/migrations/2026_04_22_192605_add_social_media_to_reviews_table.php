@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (! Schema::hasTable('carrygo_review')) {
+            return;
+        }
+
         Schema::table('carrygo_review', function (Blueprint $table) {
             $table->string('social_platform', 50)->nullable();
             $table->string('social_handle', 255)->nullable();
@@ -22,6 +26,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (! Schema::hasTable('carrygo_review')) {
+            return;
+        }
+
         Schema::table('carrygo_review', function (Blueprint $table) {
             $table->dropColumn(['social_platform', 'social_handle']);
         });

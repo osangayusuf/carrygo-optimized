@@ -25,7 +25,7 @@ class LeaderboardBidsController extends Controller
 
         $bids = Bid::query()
             ->leftJoinSub($maxQuery, 'm', 'carrygo_bid.id', '=', 'm.bidid')
-            ->whereIn('status', [BidStatus::Upcoming, BidStatus::Live])
+            ->where('status', BidStatus::Live)
             ->when($request->search, function ($q, $s) {
                 $q->where(function ($sub) use ($s) {
                     $sub->where('name', 'like', "%{$s}%")

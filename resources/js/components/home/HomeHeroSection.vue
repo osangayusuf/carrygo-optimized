@@ -1,111 +1,248 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
-import { computed } from 'vue';
-import type { HeroBid } from '@/pages/Home.vue';
+import { Link, usePage } from '@inertiajs/vue3';
+import { useIntervalFn } from '@vueuse/core';
+import { ref, computed } from 'vue';
 import { howToPlay, trending } from '@/routes';
 
-const FALLBACK_IMAGE =
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuBHjOXTZ8fUFaJuDZIWWWDx6eEMzHkxy6MXp0cUyhnl0shzmwRHLXNU257TOk4kpsZiWukqBCu831ok55wdJu6guTlZ-D3EPbrqZ8_nBrIGEVIeX6ZJFbRGoDCwx1szVZdNj5_HU60NW_HWfO7VP_8kKOO1nt40zZYk0gTM2SuHwAI_MAGJIYsbuu3iWHYAkqSs4EjnEKqgW0W9GxsAzRaPDMj8rbiKTHzcQhH7nztmeXYMgGteKnWO-UPUEcTtGrsD0t9yRJR0';
+const page = usePage();
+const props = defineProps<{ getCategoryIcon: (category: string) => string }>();
+const categories = computed(() => (page.props.categories as string[]) ?? []);
 
-const props = defineProps<{
-    heroBid: HeroBid | null;
-}>();
+const bannerImages = [
+    '/images/banner1.jpeg',
+    '/images/banner2.png',
+];
+const currentBannerIndex = ref(0);
 
-const heroName = computed(() => props.heroBid?.name ?? 'Rolex Submariner');
-const heroImage = computed(() => props.heroBid?.image ?? FALLBACK_IMAGE);
-const heroAlt = computed(() => props.heroBid?.name ?? 'Luxury Watch');
+const { pause } = useIntervalFn(() => {
+    currentBannerIndex.value =
+        (currentBannerIndex.value + 1) % bannerImages.length;
+}, 3000);
 
-const heroPrice = computed(() => {
-    if (!props.heroBid) {
-        return '₦ 1,250,000';
-    }
+const stopAutoSlide = () => pause();
 
-    const num = parseFloat(props.heroBid.price);
+const goToSlide = (index: number) => {
+    stopAutoSlide();
+    currentBannerIndex.value = index;
+};
 
-    return Number.isNaN(num)
-        ? props.heroBid.price
-        : `₦ ${num.toLocaleString()}`;
-});
+const nextSlide = () => {
+    stopAutoSlide();
+    currentBannerIndex.value =
+        (currentBannerIndex.value + 1) % bannerImages.length;
+};
+
+const prevSlide = () => {
+    stopAutoSlide();
+    currentBannerIndex.value =
+        (currentBannerIndex.value - 1 + bannerImages.length) %
+        bannerImages.length;
+};
 </script>
 
 <template>
+    <!-- HERO -->
     <section
-        class="hero-pattern relative flex min-h-[819px] items-center overflow-hidden px-8"
+        class="mx-auto mt-2.5 max-w-7xl items-stretch gap-2.5 px-4 md:grid"
+        style="grid-template-columns: 1fr 4fr"
     >
+        <!-- LEFT CATEGORIES NAV -->
         <div
-            class="mx-auto grid w-full max-w-screen-2xl grid-cols-1 items-center gap-12 lg:grid-cols-2"
+            class="hidden flex-col overflow-hidden rounded-xl border border-outline-variant bg-white md:flex"
         >
-            <div class="z-10">
+            <Link
+                v-for="cat in categories"
+                :key="cat"
+                :href="trending.url() + '?category=' + encodeURIComponent(cat)"
+                class="flex flex-1 items-center gap-2.5 border-b border-sage-tint px-3.5 text-sm font-bold whitespace-nowrap text-ink no-underline transition-all duration-150 last:border-b-0 hover:bg-sage-tint hover:pl-4.5 hover:text-primary"
+            >
                 <span
-                    class="mb-6 inline-block rounded-full bg-secondary-container px-4 py-1.5 text-xs font-bold tracking-widest text-on-secondary-container uppercase"
+                    v-if="props.getCategoryIcon(cat)"
+                    class="material-symbols-outlined mr-1 text-sm"
                 >
-                    Premium Auction Concierge
+                    {{ getCategoryIcon(cat) }}
                 </span>
+                {{ cat }} <i class="pi pi-chevron-right ml-auto text-xs"></i>
+            </Link>
+        </div>
+
+        <!-- MAIN BANNER -->
+        <div
+            class="relative flex min-h-84 items-stretch overflow-hidden rounded-xl bg-forest-dark"
+        >
+            <div class="z-2 flex grow flex-col justify-center px-8 py-7.5">
+                <div
+                    class="mb-3.5 inline-flex items-center gap-1 self-start rounded-full bg-lemon px-3 py-1 text-xs font-extrabold tracking-wider text-navy uppercase"
+                >
+                    🇳🇬 Nigeria's #1 Auction Platform
+                </div>
                 <h1
-                    class="mb-8 font-headline text-6xl leading-[0.9] font-extrabold tracking-tighter text-on-surface md:text-8xl"
+                    class="mb-2.5 font-condensed text-5xl leading-none font-black text-white"
                 >
-                    Bid, Win,
-                    <br />
-                    <span
-                        class="bg-linear-to-r from-primary to-primary-container bg-clip-text text-transparent"
-                        >&amp; Save.</span
-                    >
+                    Win More.<span class="block text-lemon">Carry More.</span>
                 </h1>
-                <p
-                    class="mb-10 max-w-lg text-lg leading-relaxed text-secondary"
-                >
-                    Experience the most transparent executive bidding platform.
-                    Curated luxury items, verified winners, and a seamless
-                    digital concierge service.
+                <p class="mb-5.5 text-sm leading-relaxed text-white/65">
+                    Bid on premium luxury items. Pay nothing if you win.
                 </p>
-                <div class="flex flex-wrap gap-4">
+                <div class="mb-6 flex gap-2.5">
                     <Link
                         :href="trending.url()"
-                        class="flex items-center gap-3 rounded-xl bg-primary px-10 py-5 text-lg font-bold text-on-primary transition-all hover:shadow-2xl hover:shadow-primary/30 active:scale-[0.98]"
+                        class="cursor-pointer rounded-lg border-none bg-lemon px-6 py-2.5 text-sm font-extrabold whitespace-nowrap text-navy"
                     >
                         Start Bidding
-                        <span class="material-symbols-outlined"
-                            >trending_up</span
-                        >
                     </Link>
                     <Link
                         :href="howToPlay.url()"
-                        class="rounded-xl border border-outline-variant/20 bg-surface-container-lowest px-10 py-5 text-lg font-bold text-on-surface transition-all hover:bg-surface-container-low"
+                        class="cursor-pointer rounded-lg border-2 border-lemon bg-transparent px-5 py-2 text-sm font-bold whitespace-nowrap text-lemon"
                     >
-                        How it Works
+                        How It Works
                     </Link>
                 </div>
-            </div>
-            <div class="relative hidden lg:block">
-                <div
-                    class="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-primary-container/20 blur-[120px]"
-                />
-                <div
-                    class="absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-tertiary-container/20 blur-[100px]"
-                />
-                <div
-                    class="relative z-10 rotate-3 rounded-3xl bg-surface-container-lowest p-6 shadow-2xl transition-transform duration-700 hover:rotate-0"
-                >
-                    <img
-                        :alt="heroAlt"
-                        class="h-[500px] w-full rounded-2xl object-cover"
-                        :src="heroImage"
-                    />
-                    <div
-                        class="absolute -bottom-10 -left-10 max-w-[200px] animate-bounce-slow rounded-2xl bg-white p-6 shadow-xl"
-                    >
-                        <div class="mb-2 flex items-center gap-2">
-                            <span class="h-2 w-2 rounded-full bg-error" />
-                            <span
-                                class="text-xs font-bold tracking-wide text-secondary uppercase"
-                                >Ending Soon</span
-                            >
-                        </div>
-                        <p class="text-sm font-bold">{{ heroName }}</p>
-                        <p class="text-lg font-black text-primary">
-                            {{ heroPrice }}
-                        </p>
+                <div class="flex gap-7">
+                    <div>
+                        <span
+                            class="block text-2xl leading-none font-black text-lemon"
+                            >50K+</span
+                        >
+                        <span class="mt-0.5 block text-xs text-white/55"
+                            >Happy Winners</span
+                        >
                     </div>
+                    <div>
+                        <span
+                            class="block text-2xl leading-none font-black text-lemon"
+                            >₦0</span
+                        >
+                        <span class="mt-0.5 block text-xs text-white/55"
+                            >Lost Bid Cost</span
+                        >
+                    </div>
+                    <div>
+                        <span
+                            class="block text-2xl leading-none font-black text-lemon"
+                            >100%</span
+                        >
+                        <span class="mt-0.5 block text-xs text-white/55"
+                            >Transparent</span
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="hero-banner-right-bg group relative hidden w-1/2 shrink-0 overflow-hidden select-none md:flex"
+            >
+                <div
+                    class="relative flex h-full w-full items-center justify-center overflow-hidden"
+                    id="heroCarousel"
+                >
+                    <div
+                        class="flex h-full w-full items-center transition-transform duration-500 ease-in-out"
+                        :style="{
+                            transform: `translateX(-${currentBannerIndex * 100}%)`,
+                        }"
+                    >
+                        <div
+                            v-for="(img, index) in bannerImages"
+                            :key="index"
+                            class="flex min-w-full flex-col items-center justify-center"
+                        >
+                            <img
+                                :src="`${$page.props.asset_url}${img}`"
+                                alt="Banner"
+                                class="h-auto w-full animate-float-img rounded-md object-contain px-7"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Navigation Arrows -->
+                    <button
+                        @click="prevSlide"
+                        class="absolute top-1/2 left-2 z-10 flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-none bg-black/30 text-white opacity-0 transition-colors group-hover:opacity-100 hover:bg-black/50"
+                    >
+                        <i class="pi pi-chevron-left text-sm"></i>
+                    </button>
+                    <button
+                        @click="nextSlide"
+                        class="absolute top-1/2 right-2 z-10 flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-none bg-black/30 text-white opacity-0 transition-colors group-hover:opacity-100 hover:bg-black/50"
+                    >
+                        <i class="pi pi-chevron-right text-sm"></i>
+                    </button>
+
+                    <!-- Dots -->
+                    <div
+                        class="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 drop-shadow-md"
+                    >
+                        <button
+                            v-for="(_, index) in bannerImages"
+                            :key="`dot-${index}`"
+                            @click="goToSlide(index)"
+                            class="cursor-pointer rounded-full border-none p-0 transition-all duration-300"
+                            :class="
+                                currentBannerIndex === index
+                                    ? 'h-2 w-6 bg-lemon'
+                                    : 'h-2 w-2 bg-white/50 hover:bg-white/80'
+                            "
+                        ></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="group relative my-5 hidden w-full overflow-hidden select-none max-md:flex"
+        >
+            <div
+                class="relative flex h-full w-full items-center justify-center overflow-hidden"
+                id="heroCarousel"
+            >
+                <div
+                    class="flex h-full w-full items-center transition-transform duration-500 ease-in-out"
+                    :style="{
+                        transform: `translateX(-${currentBannerIndex * 100}%)`,
+                    }"
+                >
+                    <div
+                        v-for="(img, index) in bannerImages"
+                        :key="index"
+                        class="flex min-w-full flex-col items-center justify-center"
+                    >
+                        <img
+                            :src="`${$page.props.asset_url}${img}`"
+                            alt="Banner"
+                            class="h-auto w-full animate-float-img rounded-md object-contain px-7"
+                        />
+                    </div>
+                </div>
+
+                <!-- Navigation Arrows -->
+                <button
+                    @click="prevSlide"
+                    class="absolute top-1/2 left-2 z-10 flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-none bg-black/30 text-white transition-colors hover:bg-black/50"
+                >
+                    <i class="pi pi-chevron-left text-sm"></i>
+                </button>
+                <button
+                    @click="nextSlide"
+                    class="absolute top-1/2 right-2 z-10 flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-none bg-black/30 text-white transition-colors hover:bg-black/50"
+                >
+                    <i class="pi pi-chevron-right text-sm"></i>
+                </button>
+
+                <!-- Dots -->
+                <div
+                    class="absolute bottom-0 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2"
+                >
+                    <button
+                        v-for="(_, index) in bannerImages"
+                        :key="`dot-${index}`"
+                        @click="goToSlide(index)"
+                        class="cursor-pointer rounded-full border-none p-0 transition-all duration-300"
+                        :class="
+                            currentBannerIndex === index
+                                ? 'h-2 w-6 bg-ink'
+                                : 'h-2 w-2 bg-ink/30 hover:bg-ink/50'
+                        "
+                    ></button>
                 </div>
             </div>
         </div>

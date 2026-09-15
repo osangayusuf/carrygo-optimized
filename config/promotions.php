@@ -14,7 +14,25 @@ return [
     */
     'winner_popup' => [
         'enabled' => env('WINNER_POPUP_ENABLED', true),
-        'bid_id' => env('WINNER_POPUP_BID_ID', 433),
+        'bid_id' => env('WINNER_POPUP_BID_ID', 799),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Event Popup
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, the homepage will show a promotional popup for configured
+    | event bids. Each item has a bid_id and display title. Item names come
+    | from the database. Set enabled to false to disable.
+    |
+    */
+    'event_popup' => [
+        'enabled' => env('EVENT_POPUP_ENABLED', true),
+        'items' => [
+            ['bid_id' => 761, 'title' => 'Bid Aura'],
+            ['bid_id' => 798, 'title' => 'Stylish Aura'],
+        ],
     ],
 
     /*

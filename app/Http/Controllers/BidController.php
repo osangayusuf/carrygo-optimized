@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\BidStatus;
+use App\Http\Requests\PlaceBidRequest;
 use App\Models\ActivePoint;
 use App\Models\Bid;
 use App\Models\BidActive;
@@ -12,18 +13,15 @@ use App\Models\Point;
 use App\Models\User;
 use App\Services\AchievementService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class BidController extends Controller
 {
     public function __construct(private readonly AchievementService $achievementService) {}
 
-    public function store(Request $request, Bid $bid): RedirectResponse
+    public function store(PlaceBidRequest $request, Bid $bid): RedirectResponse
     {
-        $validated = $request->validate([
-            'points' => ['required', 'integer', 'min:1'],
-        ]);
+        $validated = $request->validated();
 
         $user = $request->user();
         $msisdn = $user->msisdn;
@@ -116,8 +114,6 @@ class BidController extends Controller
                         'points' => $carrygo_bid_entry_sum,
                         'status' => 0,
                     ]);
-
-                    $bid->update(['status' => BidStatus::Live]);
                 }
             }
         });

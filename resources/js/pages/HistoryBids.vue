@@ -8,6 +8,7 @@ export interface WonBid extends Bid {
     bid_winner?: {
         msisdn: string;
         total_points: number;
+        created_at: string;
     } | null;
     reviews?: {
         id: number;
@@ -26,8 +27,5 @@ defineProps<{
 
 <template>
     <Head title="Won Bids History" />
-    <HistoryBidsSection
-        :bids="bids"
-        :userPoints="userPoints"
-    />
+    <HistoryBidsSection :bids="bids" :userPoints="userPoints" />
 </template>

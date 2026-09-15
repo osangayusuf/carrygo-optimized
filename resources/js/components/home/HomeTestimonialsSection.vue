@@ -1,85 +1,257 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue';
+import { formatMsisdn } from '@/lib/utils';
 import type { Review } from '@/pages/Home.vue';
 
 const props = defineProps<{
     reviews: Review[];
 }>();
 
+const selectedReview = ref<Review | null>(null);
+const showShareModal = ref(false);
+const copied = ref(false);
 
-function maskedPhone(msisdn: string | undefined): { prefix: string; suffix: string } {
-    if (!msisdn) return { prefix: '+234', suffix: 'xxxx' };
+function openShareModal(review: Review) {
+    selectedReview.value = review;
+    showShareModal.value = true;
+    copied.value = false;
+}
 
-    const digits = msisdn.replace(/\D/g, '');
+function closeShareModal() {
+    showShareModal.value = false;
+    selectedReview.value = null;
+}
 
-    return {
-        prefix: `+${digits.slice(0, 3)} ${digits.slice(3, 6)}`,
-        suffix: digits.slice(-4),
-    };
+const currentShareUrl = computed(() => {
+    if (!selectedReview.value) {
+        return '';
+    }
+
+    return `${window.location.origin}/reviews/${selectedReview.value.id}`;
+});
+
+const shareText = computed(() => {
+    if (!selectedReview.value) {
+        return '';
+    }
+
+    if (selectedReview.value.bid) {
+        return `Check out this review of ${selectedReview.value.bid.name} won on CarryGo! 🏆🎉`;
+    }
+
+    return `Check out this 5-star review of CarryGo! ⭐⭐⭐⭐⭐`;
+});
+
+const whatsappUrl = computed(() => {
+    return `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText.value + ' ' + currentShareUrl.value)}`;
+});
+
+const facebookUrl = computed(() => {
+    return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentShareUrl.value)}`;
+});
+
+const xUrl = computed(() => {
+    const params = new URLSearchParams({
+        text: shareText.value,
+        url: currentShareUrl.value,
+    });
+
+    return `https://x.com/intent/tweet?${params.toString()}`;
+});
+
+function copyLink() {
+    navigator.clipboard.writeText(currentShareUrl.value).then(() => {
+        copied.value = true;
+        setTimeout(() => {
+            copied.value = false;
+        }, 2000);
+    });
 }
 </script>
 
 <template>
-    <section class="bg-surface-container py-20 pb-24">
-        <div class="mx-auto max-w-screen-2xl px-8">
-            <div class="mb-12 text-center">
-                <h2 class="mb-2 font-headline text-3xl font-extrabold tracking-tight">
-                    What Our Community Says
-                </h2>
-                <p class="font-medium text-secondary">
-                    Hear from winners who have scored amazing bids on CarryGo
-                </p>
+    <div class="mx-auto mb-5 max-w-[1300px] px-4">
+        <!-- Section Header -->
+        <div class="mb-3.5 flex items-center justify-between">
+            <div
+                class="flex items-center font-condensed text-2xl font-extrabold text-ink"
+            >
+                <span
+                    class="mr-2 inline-block h-[22px] w-1 rounded-sm bg-forest align-middle"
+                ></span>
+                <span class="pi pi-comments mr-1 text-lg text-forest"></span>
+                What Our Community Says
             </div>
+        </div>
+        <div class="mb-4.5 text-center text-[13px] text-muted-green">
+            Hear from winners who have scored amazing bids on CarryGo
+        </div>
 
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <div v-for="review in props.reviews" :key="review.id"
-                    class="flex h-full flex-col rounded-2xl bg-surface-container-lowest p-6 shadow-sm transition-shadow hover:shadow-md">
-                    <!-- Stars -->
-                    <div class="flex text-amber-500 gap-1 items-center mb-4">
-                        <svg v-for="i in 5" :key="i" class="w-4 h-4 shrink-0"
-                            :class="i <= Math.round(Number(review.rating)) ? 'fill-current text-amber-500 stroke-amber-500' : 'fill-none stroke-amber-500 text-amber-500'"
-                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-                        </svg>
+        <!-- Grid -->
+        <div class="grid grid-cols-1 gap-3.5 md:grid-cols-2 lg:grid-cols-3">
+            <div
+                v-for="review in props.reviews"
+                :key="review.id"
+                class="group relative flex h-full flex-col rounded-lg border border-sage-border-dark bg-white p-4.5 shadow-sm"
+            >
+                <!-- Stars & Share Row -->
+                <div class="mb-2.5 flex items-center justify-between">
+                    <div class="flex gap-0.5 text-xs text-amber">
+                        <span
+                            v-for="i in review.rating"
+                            :key="i"
+                            class="pi pi-star-fill"
+                        ></span>
+                        <span
+                            v-for="i in 5 - review.rating"
+                            :key="i"
+                            class="pi pi-star opacity-25"
+                        ></span>
                     </div>
+                    <button
+                        @click="openShareModal(review)"
+                        class="flex cursor-pointer items-center justify-center rounded-full p-1 text-secondary/50 transition-colors hover:bg-sage-bg hover:text-primary"
+                        title="Share Review"
+                    >
+                        <span class="material-symbols-outlined text-[16px]"
+                            >share</span
+                        >
+                    </button>
+                </div>
 
-                    <!-- Comment -->
-                    <p class="mb-6 grow text-sm leading-relaxed text-on-surface">
-                        "{{ review.comment }}"
-                    </p>
+                <!-- Comment -->
+                <div
+                    class="mb-3.5 grow text-sm leading-relaxed text-gray-800 italic"
+                >
+                    "{{ review.comment }}"
+                </div>
 
-                    <!-- User and Bid Info -->
-                    <div class="mt-auto border-t border-surface-container pt-4">
-                        <div class="mb-3 flex items-center gap-3">
-                            <div
-                                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-container text-primary">
-                                <span class="material-symbols-outlined text-sm" data-weight="fill">
-                                    person
-                                </span>
+                <!-- User and Bid Info -->
+                <div class="mt-auto">
+                    <div class="flex items-center gap-2.5">
+                        <div
+                            class="flex h-9 w-9 items-center justify-center rounded-full bg-lemon text-base"
+                        >
+                            <span class="pi pi-user"></span>
+                        </div>
+                        <div>
+                            <div class="text-sm font-extrabold text-ink">
+                                {{
+                                    formatMsisdn(review.user_id) || 'Anonymous'
+                                }}
                             </div>
-                            <div>
-                                <p class="text-sm font-bold leading-none">
-                                    {{ maskedPhone(review.user_id?.toString()).prefix }}
-                                    <span class="text-secondary opacity-50">***</span>
-                                    {{ maskedPhone(review.user_id?.toString()).suffix }}
-                                </p>
-                                <div class="mt-1 flex items-center gap-2">
-                                    <p class="text-xs text-secondary">Verified Bidder</p>
-                                    <div v-if="review.social_platform && review.social_handle" class="flex items-center gap-1 text-[10px] text-primary font-medium bg-primary/10 px-1.5 py-0.5 rounded">
-                                        <span>{{ review.social_platform }}:</span>
-                                        <span>{{ review.social_handle.startsWith('@') ? review.social_handle : '@' + review.social_handle }}</span>
-                                    </div>
-                                </div>
+                            <div class="text-xs text-muted-green">
+                                Verified User
                             </div>
                         </div>
-                        <div v-if="review.bid" class="rounded-lg bg-surface-container p-2">
-                            <p class="text-xs font-semibold text-secondary truncate">
-                                Item: {{ review.bid.name }}
-                            </p>
-                        </div>
                     </div>
+                    <span
+                        v-if="review.bid"
+                        class="mt-2.5 inline-block rounded-md bg-[#e8f5e0] px-2.5 py-1 text-xs font-bold text-forest"
+                    >
+                        Item: {{ review.bid.name }}
+                    </span>
                 </div>
             </div>
         </div>
-    </section>
+
+        <!-- Share Micro-Modal -->
+        <Teleport to="body">
+            <div
+                v-if="showShareModal && selectedReview"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs"
+            >
+                <div class="absolute inset-0" @click="closeShareModal"></div>
+
+                <div
+                    class="relative flex w-full max-w-sm flex-col overflow-hidden rounded-3xl border border-surface-container bg-surface-container-lowest p-6 text-left font-sans shadow-2xl"
+                >
+                    <button
+                        type="button"
+                        class="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-surface-container text-on-surface-variant transition-colors hover:bg-surface-container-high"
+                        @click="closeShareModal"
+                    >
+                        <span class="material-symbols-outlined text-[18px]"
+                            >close</span
+                        >
+                    </button>
+
+                    <h3
+                        class="mb-2 font-headline text-xl font-extrabold text-on-surface"
+                    >
+                        Share Review
+                    </h3>
+                    <p class="mb-4 truncate text-xs text-outline italic">
+                        "{{ selectedReview.comment }}"
+                    </p>
+
+                    <!-- Sharing Actions -->
+                    <div class="space-y-3">
+                        <a
+                            :href="whatsappUrl"
+                            target="_blank"
+                            class="flex w-full items-center justify-center gap-3 rounded-2xl bg-[#25D366] px-4 py-3.5 text-sm font-bold text-white shadow-xs transition-all hover:bg-[#20ba5a]"
+                            style="text-decoration: none"
+                        >
+                            <span class="pi pi-whatsapp text-lg"></span> Share
+                            to WhatsApp
+                        </a>
+
+                        <a
+                            :href="facebookUrl"
+                            target="_blank"
+                            class="flex w-full items-center justify-center gap-3 rounded-2xl bg-[#1877F2] px-4 py-3.5 text-sm font-bold text-white shadow-xs transition-all hover:bg-[#166fe5]"
+                            style="text-decoration: none"
+                        >
+                            <span class="pi pi-facebook text-lg"></span> Share
+                            to Facebook
+                        </a>
+
+                        <a
+                            :href="xUrl"
+                            target="_blank"
+                            class="flex w-full items-center justify-center gap-3 rounded-2xl bg-black px-4 py-3.5 text-sm font-bold text-white shadow-xs transition-all hover:bg-gray-900"
+                            style="text-decoration: none"
+                        >
+                            <span class="text-lg leading-none font-black"
+                                >𝕏</span
+                            >
+                            Share to X
+                        </a>
+
+                        <!-- Direct View Link -->
+                        <a
+                            :href="`/reviews/${selectedReview.id}`"
+                            class="flex w-full items-center justify-center gap-3 rounded-2xl bg-navy px-4 py-3.5 text-sm font-bold text-lemon shadow-xs transition-all hover:bg-forest"
+                            style="text-decoration: none"
+                        >
+                            <span class="pi pi-external-link text-lg"></span>
+                            View Dedicated Page
+                        </a>
+
+                        <!-- Copy Link Button -->
+                        <button
+                            @click="copyLink"
+                            class="flex w-full cursor-pointer items-center justify-center gap-3 rounded-2xl border px-4 py-3.5 text-sm font-bold shadow-xs transition-all"
+                            :class="
+                                copied
+                                    ? 'border-forest bg-forest text-lemon'
+                                    : 'border-surface-container bg-surface-container-low text-on-surface hover:bg-surface-container-high'
+                            "
+                        >
+                            <span
+                                class="pi text-lg"
+                                :class="copied ? 'pi-check' : 'pi-link'"
+                            ></span>
+                            {{
+                                copied
+                                    ? 'Copied Review Link!'
+                                    : 'Copy Review Link'
+                            }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </Teleport>
+    </div>
 </template>
