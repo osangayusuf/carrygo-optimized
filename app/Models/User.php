@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-#[Fillable(['msisdn', 'referral_code', 'referred_by_user_id', 'name', 'role', 'email', 'password', 'checkin_streak', 'last_checkin_date', 'spins_balance'])]
+#[Fillable(['msisdn', 'referral_code', 'referred_by_user_id', 'name', 'role', 'email', 'password', 'checkin_streak', 'last_checkin_date', 'spins_balance', 'suspended_at'])]
 #[Table('carrygo_users')]
 class User extends Model implements Authenticatable
 {
@@ -25,7 +25,13 @@ class User extends Model implements Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'suspended_at' => 'datetime',
         ];
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->suspended_at !== null;
     }
 
     public function referredBy(): BelongsTo

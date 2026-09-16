@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\MsisdnLoginController;
 use App\Http\Controllers\BidController;
+use App\Http\Middleware\EnsureUserIsNotSuspended;
 use App\Http\Controllers\CheckinController;
 use App\Http\Controllers\EventBidsController;
 use App\Http\Controllers\HistoryController;
@@ -36,7 +37,7 @@ Route::middleware('guest')->group(function () {
         ->name('login.store');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', EnsureUserIsNotSuspended::class])->group(function () {
     Route::post('/logout', [MsisdnLoginController::class, 'logout'])
         ->name('logout');
 
