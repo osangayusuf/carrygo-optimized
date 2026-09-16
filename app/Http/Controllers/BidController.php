@@ -27,6 +27,10 @@ class BidController extends Controller
         $msisdn = $user->msisdn;
         $points = $validated['points'];
 
+        if ($bid->status !== BidStatus::Live) {
+            return back()->withErrors(['points' => 'This item is not open for bidding.']);
+        }
+
         if ($points <= 0) {
             return back()->withErrors(['points' => 'You cannot bid with 0 points']);
         }

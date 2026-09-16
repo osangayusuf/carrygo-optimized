@@ -66,6 +66,14 @@ class MsisdnLoginController extends Controller
             ],
         );
 
+        if ($user->isSuspended()) {
+            return redirect()->route('login')
+                ->withErrors([
+                    'msisdn' => 'Your account has been suspended. Please contact support.',
+                ])
+                ->withInput(['msisdn' => $msisdn]);
+        }
+
         if (empty($user->referral_code)) {
             $user->update([
                 'referral_code' => $this->generateUniqueReferralCode(),
